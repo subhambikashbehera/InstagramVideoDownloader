@@ -1,4 +1,4 @@
-package com.subhambikashsubhamgupta.instagramdownloader
+git package com.subhambikashsubhamgupta.instagramdownloader
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
