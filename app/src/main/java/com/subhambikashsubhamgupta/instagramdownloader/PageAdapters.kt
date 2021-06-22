@@ -3,31 +3,20 @@ package com.subhambikashsubhamgupta.instagramdownloader
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.lifecycle.Lifecycle
+import androidx.viewpager2.adapter.FragmentStateAdapter
 
-class PageAdapters(fm:FragmentManager): FragmentPagerAdapter(fm,
-    BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-
-    val mfragmentlist= arrayListOf<Fragment>()
-    val mfragmenttittlelist= arrayListOf<String>()
-
-    override fun getCount(): Int {
-        return mfragmentlist.size
+class PageAdapters(fm:FragmentManager,lc:Lifecycle): FragmentStateAdapter(fm,lc)
+{
+    override fun getItemCount(): Int {
+        return  2
     }
-
-    override fun getItem(position: Int): Fragment {
-        return mfragmentlist[position]
+    override fun createFragment(position: Int): Fragment {
+        when(position)
+        {
+            0->{return DownloadFragment()}
+            1->{return HistoryFragment()}
+            else->{return DownloadFragment()}
+        }
     }
-
-    override fun getPageTitle(position: Int): CharSequence? {
-    return mfragmenttittlelist[position]
-    }
-
-    fun addfragmemt(fragmet:Fragment,tittle:String)
-    {
-        mfragmentlist.add(fragmet)
-        mfragmenttittlelist.add(tittle)
-    }
-
-
-
 }
