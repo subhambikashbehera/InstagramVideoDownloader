@@ -17,6 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_margin="12dp"
+            app:endIconMode="clear_text"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:hint="Paste Link Here">
 
