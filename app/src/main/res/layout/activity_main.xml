@@ -12,7 +12,6 @@
         android:id="@+id/tablayout"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="#F48C3D"
         app:tabGravity="fill"
         app:tabInlineLabel="true"
         app:tabMode="fixed"

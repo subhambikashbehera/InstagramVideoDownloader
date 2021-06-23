@@ -23,45 +23,41 @@ import com.android.volley.toolbox.Volley
 
 class DownloadFragment : Fragment() {
 
-    private lateinit var download: Button
-    private lateinit var eturl: EditText
-    private lateinit var webView: WebView
-    private lateinit var requestQueue: RequestQueue
+
+    private var param1: String? = null
+    private var param2: String? = null
+    private val mParam1: String? = null
+    private val mParam2: String? = null
+    private var download: Button? = null
+    private var eturl: EditText? = null
+    private var webView: WebView? = null
+    private var requestQueue: RequestQueue? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // Inflate the layout for this fragment
 
+        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_download, container, false)
-        return view
-    }
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
         eturl = view.findViewById(R.id.eturl)
         download = view.findViewById(R.id.download)
         webView = view.findViewById(R.id.webview)
-
-
-
-        download.setOnClickListener { getDownloadableUrl(eturl.text.toString()) }
-
-
-
+        //call getDownloadableUrl(eturl.getText)
+        download?.setOnClickListener { getDownloadableUrl(eturl?.text.toString()) }
+        return view
     }
 
 
     fun getDownloadableUrl(url: String?){
         requestQueue = Volley.newRequestQueue(context)
-        val req = JsonObjectRequest(Request.Method.GET, "$url?__a=1", null,
+        val req = JsonObjectRequest(Request.Method.GET, url, null,
             {
-                    response ->
-                Log.e( "Response",response.toString())
-            }, {
-                Log.e( "Response",it.toString())
+            response ->
+                Log.e( "Response",response["success"].toString())
+        }, {
+
             })
         requestQueue?.add(req)
     }
