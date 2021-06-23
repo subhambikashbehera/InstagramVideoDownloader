@@ -9,101 +9,137 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebSettings.PluginState
-import android.webkit.WebView
-import android.webkit.WebViewClient
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
-import android.widget.VideoView
+import android.view.inputmethod.InputMethodManager
+import android.widget.*
 import androidx.fragment.app.Fragment
 import com.android.volley.Request
-import com.android.volley.RequestQueue
-import com.android.volley.VolleyError
-import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.bumptech.glide.Glide
 import org.json.JSONObject
 
 
 class DownloadFragment : Fragment() {
 
-
-    private var param1: String? = null
-    private var param2: String? = null
-    private val mParam1: String? = null
-    private val mParam2: String? = null
-    private var download: Button? = null
+    private var download: ImageButton? = null
     private var eturl: EditText? = null
-    private var videoView: WebView? = null
-    private var requestQueue: RequestQueue? = null
+    lateinit var imageview:ImageView
+    lateinit var mediaController: MediaController
+    private lateinit var videoView: VideoView
+    lateinit var generate:Button
+    var downloadableurl=""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_download, container, false)
-        eturl = view.findViewById(R.id.eturl)
-        download = view.findViewById(R.id.download)
-        videoView = view.findViewById(R.id.webview)
-
-        //call getDownloadableUrl(eturl.getText)
-        download?.setOnClickListener { getDownloadableUrl(eturl?.text.toString()) }
         return view
     }
 
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        eturl = view.findViewById(R.id.eturl)
+        download = view.findViewById(R.id.download)
+        videoView = view.findViewById(R.id.videoView2)
+        imageview=view.findViewById(R.id.imageView)
+        generate=view.findViewById(R.id.generate)
+
+
+        generate.setOnClickListener {
+            hidekeyboard()
+            getDownloadableUrl(eturl?.text.toString()) }
+
+        download?.setOnClickListener {
+            videoView.start()
+            activity?.applicationContext?.let { downloadFile(it,"instasaver.mp4",downloadableurl) }
+        }
+
+
+    }
+
     fun getDownloadableUrl(url: String?){
-        var uri: Uri
+        val uri: Uri
         uri = Uri.parse(url)
-        var path = uri.pathSegments
+        val path = uri.pathSegments
         println("path"+path)
-        var url_final = "https://www.instagram.com/"+path[0]+"/"+path[1]+"/?__a=1/"
+        val url_final = "https://www.instagram.com/"+path[0]+"/"+path[1]+"/?__a=1"
         println(url_final)
-        requestQueue = Volley.newRequestQueue(context)
-        val req = JsonObjectRequest(Request.Method.GET, url_final, null,
-            {
-                    response ->
+       val requestQueue = Volley.newRequestQueue(context)
+
+        val stringRequest=object :StringRequest(Request.Method.GET,url_final,Response.Listener<String>
+        {response ->
+
                 var video_url=""
                 var pic_url=""
+
                 try {
-                    Log.e( "Response",response.toString())
-                    var json: JSONObject = JSONObject(response.toString())
-                    video_url = json.getJSONObject("graphql").getJSONObject("shortcode_media").getString("video_url")
-                    Log.e("vid_url", video_url);
-                    var ur0 = json.getJSONObject("graphql").getJSONObject("shortcode_media").getString("display_resources")
-                    var ur1 = ur0[2]
-                    var pu :JSONObject = JSONObject(ur1.toString())
-                    pic_url = pu.getString("src")
-                    Log.e("pic",pic_url);
-
-                }catch (e:Exception){
-                    e.message?.let { Log.e("Error", it) }
-                }
-                if (video_url.isNotEmpty()){
-                    videoView?.loadUrl(video_url)
-                    activity?.applicationContext?.let { downloadFile(it,"instasaver.mp4",video_url) }
-
+                    val json = JSONObject(response)
+                    val ur0 = json.getJSONObject("graphql").getJSONObject("shortcode_media")
+                        .getJSONArray("display_resources")
+                    val jsonobject2 = ur0.getJSONObject(2)
+                    pic_url = jsonobject2.getString("src")
+                    Log.d("pic", pic_url);
+                }catch (e:Exception)
+                {
+                    e.printStackTrace()
                 }
 
-                else if (pic_url.isNotEmpty()){
+            try {
+                val json = JSONObject(response.toString())
+                video_url = json.getJSONObject("graphql").getJSONObject("shortcode_media")
+                    .getString("video_url")
+                downloadableurl=video_url
+                Log.e("vid_url", video_url);
+            }catch (e:Exception)
+            {
+                e.printStackTrace()
+            }
 
+
+            if (video_url!=""){
+                    videoView?.visibility=View.VISIBLE
+                    imageview.visibility=View.GONE
+
+                videoView.setVideoURI(Uri.parse(video_url))
+                mediaController= MediaController(context)
+                mediaController.setAnchorView(videoView)
+                videoView.setMediaController(mediaController)
+
+                videoView.setOnPreparedListener {
+                   it.isLooping=true
+                    it.start()
                 }
-                else
-                    Toast.makeText(context,"No Video or Pic Available",Toast.LENGTH_LONG).show()
+                }else
+            {
+                videoView.visibility =View.GONE
+                imageview.visibility=View.VISIBLE
 
 
-            }, {
-                    VolleyError->
-                Log.e("Error", VolleyError.message.toString())
-                Log.e("Error", VolleyError.localizedMessage)
-                videoView?.loadUrl(url_final)
+                Glide
+                    .with(this)
+                    .load(pic_url)
+                    .centerCrop()
+                    .placeholder(R.drawable.ic_launcher_background)
+                    .into(imageview);
+            }
+
+
+
+        },
+            Response.ErrorListener { error ->
+                Log.e("Error", error.message.toString())
+
 
             })
+        {
 
-        requestQueue?.add(req)
+        }
+
+        requestQueue.add(stringRequest)
+
     }
 
 
@@ -119,5 +155,14 @@ class DownloadFragment : Fragment() {
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
         downloadmanager.enqueue(request)
     }
+
+
+    fun hidekeyboard() {
+        val inputManager: InputMethodManager =
+            activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(activity?.currentFocus?.windowToken,
+            InputMethodManager.SHOW_FORCED)
+    }
+
 
 }

@@ -6,7 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".DownloadFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_marginTop="32dp"
@@ -36,63 +35,88 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="12dp"
-                android:text="from clipboard"
+                android:text="PASTE LINK"
                 style="@style/Widget.MaterialComponents.Button.TextButton"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/download"
+                android:id="@+id/generate"
                 android:layout_gravity="center"
                 android:layout_margin="12dp"
-                android:text="Download"
-                style="@style/Widget.MaterialComponents.Button.TextButton"/>
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:text="Generate"
+               />
         </LinearLayout>
 
 
-        <com.google.android.material.card.MaterialCardView
+        <RelativeLayout
             android:layout_width="match_parent"
-            app:cardCornerRadius="12dp"
-            android:layout_margin="8dp"
-            android:layout_height="100dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                android:text="title"/>
-            <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:layout_height="match_parent"
+            >
+
+          <RelativeLayout
+              android:layout_marginLeft="12dp"
+              android:layout_marginRight="12dp"
+              android:layout_above="@+id/yza"
+              android:id="@+id/xyz"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              >
+              <VideoView
+                  android:id="@+id/videoView2"
+                  android:layout_alignParentTop="true"
+                  android:layout_alignParentBottom="true"
+                  android:layout_alignParentStart="true"
+                  android:layout_alignParentEnd="true"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  android:clickable="true"
+                  android:visibility="gone"
+                  tools:visibility="visible" />
+              <ImageView
+                  android:id="@+id/imageView"
+                  android:layout_width="match_parent"
+                  android:layout_height="fill_parent"
+                  android:visibility="visible"
+                  tools:src="@tools:sample/avatars" />
+          </RelativeLayout>
+
+
+
+            <LinearLayout
+                android:id="@+id/yza"
+                android:layout_alignParentBottom="true"
                 android:layout_width="match_parent"
-                app:trackThickness="100dp"
-                app:trackColor="#0029B6F6"
-                app:indicatorColor="#6081D4FA"
-                android:visibility="gone"
-                android:indeterminate="true"
-                app:indeterminateAnimationType="disjoint"
-                android:layout_height="wrap_content"/>
-            <Button
-                android:id="@+id/share"
-                android:layout_width="wrap_content"
-                android:layout_gravity="bottom|end"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_height="80dp">
+                <ImageButton
+                    android:id="@+id/share"
 
-                style="@style/Widget.App.Button.OutlinedButton.IconOnly"
-                app:icon="@drawable/ic_share"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|start"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                android:layout_marginBottom="8dp"
-                android:layout_marginStart="16dp"
-                android:text="Link"/>
+                    android:layout_width="60dp"
+                    android:layout_height="65dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="12dp"
+                    android:scaleType="fitXY"
 
-        </com.google.android.material.card.MaterialCardView>
-        <WebView
-            android:id="@+id/webview"
-            android:layout_margin="12dp"
-            android:layout_width="match_parent"
-            android:layout_height="400dp" />
+                    android:src="@drawable/share"
+                    android:background="#00FFFFFF"
+                    />
+                <ImageButton
+                    android:scaleType="fitXY"
+                    android:src="@drawable/download"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="12dp"
+                    android:background="#00FFFFFF"
+                    android:id="@+id/download"
+                    />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
     </LinearLayout>
 
 
