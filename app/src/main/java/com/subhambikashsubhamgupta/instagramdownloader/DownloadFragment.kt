@@ -1,32 +1,37 @@
 package com.subhambikashsubhamgupta.instagramdownloader
 
 import android.app.DownloadManager
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.app.Service
+import android.content.*
+import android.content.Context.CLIPBOARD_SERVICE
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.text.Editable
+import android.text.SpannableString
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import com.android.volley.Request
 import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import org.json.JSONObject
-import org.json.JSONStringer
 
 
 class DownloadFragment : Fragment() {
 
-    private var download: ImageButton? = null
+    private var download: Button? = null
+    private var share: Button? = null
+    private var fromclip: Button? = null
+    private var progress: ProgressBar? = null
     private var eturl: EditText? = null
     lateinit var imageview:ImageView
     lateinit var mediaController: MediaController
@@ -50,15 +55,25 @@ class DownloadFragment : Fragment() {
         videoView = view.findViewById(R.id.videoView2)
         imageview=view.findViewById(R.id.imageView)
         generate=view.findViewById(R.id.generate)
+        share=view.findViewById(R.id.share)
+        progress=view.findViewById(R.id.progress)
+        fromclip=view.findViewById(R.id.pastefromclip)
+        progress?.isIndeterminate = true
 
 
         generate.setOnClickListener {
             hidekeyboard()
-            getDownloadableUrl(eturl?.text.toString()) }
+           getDownloadableUrl(eturl?.text.toString())
+            progress?.visibility = View.VISIBLE
+            /*getJsonResponse(eturl?.text.toString()) */}
 
         download?.setOnClickListener {
             videoView.start()
             activity?.applicationContext?.let { downloadFile(it,"instasaver.mp4",downloadableurl) }
+        }
+        fromclip?.setOnClickListener {
+            val clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            eturl?.setText(clipboard.text as String?)
         }
 
 
@@ -81,6 +96,25 @@ class DownloadFragment : Fragment() {
 
 
     }
+    fun getJsonResponse(url: String){
+        val uri: Uri
+        uri = Uri.parse(url)
+        val path = uri.pathSegments
+        println("path$path")
+        val urlfinal = "https://www.instagram.com/"+path[0]+"/"+path[1]+"/?__a=1"
+        println(urlfinal)
+        val requestQueue = Volley.newRequestQueue(context)
+        val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, urlfinal,null,
+            { response->
+            Log.e("JSON", response.toString())
+
+
+            },
+            { error ->
+            Log.e("Error", error.message.toString())
+            })
+        requestQueue.add(jsonObjectRequest)
+    }
 
     fun getDownloadableUrl(url: String?){
         val uri: Uri
@@ -91,7 +125,7 @@ class DownloadFragment : Fragment() {
         println(urlfinal)
        val requestQueue = Volley.newRequestQueue(context)
 
-        val stringRequest=object :StringRequest(Request.Method.GET,urlfinal,Response.Listener<String>
+        val stringRequest=object :StringRequest(Method.GET,urlfinal,Response.Listener<String>
         {response ->
                 var jsonresponse:String=response.toString()
                 var video_url=""
@@ -132,8 +166,10 @@ class DownloadFragment : Fragment() {
                 videoView.setMediaController(mediaController)
 
                 videoView.setOnPreparedListener {
-                   it.isLooping=true
+                    progress?.visibility = View.GONE
+                   it.isLooping=false
                     it.start()
+
                 }
                 }else
             {
@@ -152,13 +188,13 @@ class DownloadFragment : Fragment() {
         },
             Response.ErrorListener { error ->
                 Log.e("Error", error.message.toString())
-
+                eturl?.setError("")
 
             }) {
             override fun getHeaders(): Map<String, String> {
                 val headers = HashMap<String, String>()
-                headers["Content-Type"] = "application/json"
-                headers["User-agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36"
+//                headers["Content-Type"] = "application/json"
+                headers["User-Agent"] = "Chrome/91.0.4472.77 Mobile"
                 return headers
             }
         }
