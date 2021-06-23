@@ -48,8 +48,6 @@ class DownloadFragment : Fragment() {
         eturl = view.findViewById(R.id.eturl)
         download = view.findViewById(R.id.download)
         videoView = view.findViewById(R.id.webview)
-
-        //call getDownloadableUrl(eturl.getText)
         download?.setOnClickListener { getDownloadableUrl(eturl?.text.toString()) }
         return view
     }
@@ -77,7 +75,7 @@ class DownloadFragment : Fragment() {
                     var ur1 = ur0[2]
                     var pu :JSONObject = JSONObject(ur1.toString())
                     pic_url = pu.getString("src")
-                    Log.e("pic",pic_url);
+                    Log.e("pic",pic_url)
 
                 }catch (e:Exception){
                     e.message?.let { Log.e("Error", it) }
