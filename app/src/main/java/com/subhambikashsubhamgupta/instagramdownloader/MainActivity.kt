@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        supportActionBar?.hide()
+
         viewPager = findViewById(R.id.viewpager1)
         tablayout = findViewById(R.id.tablayout)
         viewPager.adapter = PageAdapters(supportFragmentManager, lifecycle)

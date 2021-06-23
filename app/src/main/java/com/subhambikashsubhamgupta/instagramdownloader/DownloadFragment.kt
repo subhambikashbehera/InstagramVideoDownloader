@@ -1,7 +1,10 @@
 package com.subhambikashsubhamgupta.instagramdownloader
 
 import android.app.DownloadManager
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -18,6 +21,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import org.json.JSONObject
+import org.json.JSONStringer
 
 
 class DownloadFragment : Fragment() {
@@ -29,7 +33,7 @@ class DownloadFragment : Fragment() {
     private lateinit var videoView: VideoView
     lateinit var generate:Button
     var downloadableurl=""
-
+    var id:Long=0
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -58,25 +62,44 @@ class DownloadFragment : Fragment() {
         }
 
 
+
+        val reciver=object : BroadcastReceiver()
+        {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val getid=intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID,-1)
+                if (getid==id)
+                {
+                    Toast.makeText(activity,"download complete",Toast.LENGTH_SHORT).show()
+                }
+
+            }
+
+        }
+
+        val intentFilter= IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+        activity?.registerReceiver(reciver,intentFilter)
+
+
     }
 
     fun getDownloadableUrl(url: String?){
         val uri: Uri
         uri = Uri.parse(url)
         val path = uri.pathSegments
-        println("path"+path)
-        val url_final = "https://www.instagram.com/"+path[0]+"/"+path[1]+"/?__a=1"
-        println(url_final)
+        println("path$path")
+        val urlfinal = "https://www.instagram.com/"+path[0]+"/"+path[1]+"/?__a=1"
+        println(urlfinal)
        val requestQueue = Volley.newRequestQueue(context)
 
-        val stringRequest=object :StringRequest(Request.Method.GET,url_final,Response.Listener<String>
+        val stringRequest=object :StringRequest(Request.Method.GET,urlfinal,Response.Listener<String>
         {response ->
-
+                var jsonresponse:String=response.toString()
                 var video_url=""
                 var pic_url=""
 
                 try {
-                    val json = JSONObject(response)
+                    Log.d("jsonresponse", "getDownloadableUrl: $jsonresponse")
+                    val json = JSONObject(jsonresponse)
                     val ur0 = json.getJSONObject("graphql").getJSONObject("shortcode_media")
                         .getJSONArray("display_resources")
                     val jsonobject2 = ur0.getJSONObject(2)
@@ -88,7 +111,7 @@ class DownloadFragment : Fragment() {
                 }
 
             try {
-                val json = JSONObject(response.toString())
+                val json = JSONObject(jsonresponse)
                 video_url = json.getJSONObject("graphql").getJSONObject("shortcode_media")
                     .getString("video_url")
                 downloadableurl=video_url
@@ -100,7 +123,7 @@ class DownloadFragment : Fragment() {
 
 
             if (video_url!=""){
-                    videoView?.visibility=View.VISIBLE
+                    videoView.visibility =View.VISIBLE
                     imageview.visibility=View.GONE
 
                 videoView.setVideoURI(Uri.parse(video_url))
@@ -116,8 +139,6 @@ class DownloadFragment : Fragment() {
             {
                 videoView.visibility =View.GONE
                 imageview.visibility=View.VISIBLE
-
-
                 Glide
                     .with(this)
                     .load(pic_url)
@@ -133,11 +154,14 @@ class DownloadFragment : Fragment() {
                 Log.e("Error", error.message.toString())
 
 
-            })
-        {
-
+            }) {
+            override fun getHeaders(): Map<String, String> {
+                val headers = HashMap<String, String>()
+                headers["Content-Type"] = "application/json"
+                headers["User-agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36"
+                return headers
+            }
         }
-
         requestQueue.add(stringRequest)
 
     }
@@ -148,12 +172,17 @@ class DownloadFragment : Fragment() {
         if (url != null) {
             Log.e("url",url)
         }
-        val downloadmanager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val uri = Uri.parse(url)
-        val request = DownloadManager.Request(uri)
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_ONLY_COMPLETION)
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
-        downloadmanager.enqueue(request)
+
+        val request=DownloadManager.Request(Uri.parse(url))
+            .setTitle("Instagram ReelDownloader")
+            .setDescription("Video is Downloading")
+            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+            .setAllowedOverMetered(true)
+            .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
+                "Instagram Downloader/$fileName")
+
+        val dm=context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        id=dm.enqueue(request)
     }
 
 
