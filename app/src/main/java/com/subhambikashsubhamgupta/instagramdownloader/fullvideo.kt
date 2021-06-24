@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import android.widget.MediaController
 import android.widget.VideoView
 
@@ -16,8 +17,11 @@ class fullvideo : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fullvideo)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN)
         videoView=findViewById(R.id.videoViewfull)
-       val videourl=intent.getStringExtra("video")
+        val videourl=intent.getStringExtra("video")
         videoView.setVideoURI(Uri.parse(videourl))
         mediaController= MediaController(this)
         mediaController.setAnchorView(videoView)

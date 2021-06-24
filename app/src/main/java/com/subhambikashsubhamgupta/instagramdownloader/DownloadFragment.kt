@@ -187,6 +187,7 @@ class DownloadFragment : Fragment() {
         }
         else {
             Toast.makeText(activity, "Link Not Supported", Toast.LENGTH_LONG).show()
+            eturl?.error = "Link Not Supported"
             progress?.visibility = View.GONE
 
         }
