@@ -16,7 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.InstagramDownloader"
         android:usesCleartextTraffic="true">
-        <activity android:name=".fullvideo"></activity>
+        <activity android:name=".Privacypolicies"/>
+        <activity android:name=".fullvideo" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

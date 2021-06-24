@@ -33,7 +33,6 @@ class HistoryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        
 
         return inflater.inflate(R.layout.fragment_history, container, false)
     }
@@ -47,7 +46,7 @@ class HistoryFragment : Fragment() {
         if (activity?.let { ContextCompat.checkSelfPermission(it,android.Manifest.permission.READ_EXTERNAL_STORAGE) } != PackageManager.PERMISSION_GRANTED)
         {
             activity?.let { ActivityCompat.requestPermissions(it, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),102) }
-            Toast.makeText(context,"Permisssion is needed fo showing the videos",Toast.LENGTH_SHORT).show()
+
         }
         else
         {
@@ -65,6 +64,7 @@ class HistoryFragment : Fragment() {
 
         swipeContainer = view.findViewById(R.id.swipeContainer)
         swipeContainer.setOnRefreshListener {
+
             historyAdapter.clear()
             historyAdapter.addAll(listvideos)
             CoroutineScope(Dispatchers.IO).launch {loadvideo() }
@@ -74,6 +74,8 @@ class HistoryFragment : Fragment() {
             android.R.color.holo_green_light,
             android.R.color.holo_orange_light,
             android.R.color.holo_red_light)
+
+
 
     }
 
@@ -117,6 +119,8 @@ class HistoryFragment : Fragment() {
     }
 
 
+
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -129,6 +133,13 @@ class HistoryFragment : Fragment() {
         }else
         {
             Toast.makeText(context,"Permisssion is Granted",Toast.LENGTH_SHORT).show()
+            try {
+                CoroutineScope(Dispatchers.IO).launch {loadvideo() }
+                historyAdapter.notifyDataSetChanged()
+            }catch (e:Exception)
+            {
+                e.printStackTrace()
+            }
         }
     }
 
