@@ -23,6 +23,7 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
+import com.google.android.material.card.MaterialCardView
 import org.json.JSONObject
 
 
@@ -33,6 +34,7 @@ class DownloadFragment : Fragment() {
     private var share: Button? = null
     private var fromclip: Button? = null
     private var progress: ProgressBar? = null
+    private var imgvidcard: MaterialCardView? = null
     private var eturl: EditText? = null
     lateinit var imageview:ImageView
     lateinit var mediaController: MediaController
@@ -59,14 +61,19 @@ class DownloadFragment : Fragment() {
         share=view.findViewById(R.id.share)
         progress=view.findViewById(R.id.progress)
         fromclip=view.findViewById(R.id.pastefromclip)
+        imgvidcard=view.findViewById(R.id.m2card)
         progress?.isIndeterminate = true
 
 
         generate.setOnClickListener {
             hidekeyboard()
-           getDownloadableUrl(eturl?.text.toString())
-            progress?.visibility = View.VISIBLE
-            /*getJsonResponse(eturl?.text.toString()) */}
+            if(eturl?.text.toString().isNotEmpty()){
+                progress?.visibility = View.VISIBLE
+                eturl?.error = null
+                getDownloadableUrl(eturl?.text.toString())
+            } else
+                Toast.makeText(activity, "Enter Link Then Click Generate", Toast.LENGTH_LONG).show()
+            }
 
         download?.setOnClickListener {
             videoView.start()
@@ -97,109 +104,88 @@ class DownloadFragment : Fragment() {
 
 
     }
-    fun getJsonResponse(url: String){
-        val uri: Uri
-        uri = Uri.parse(url)
-        val path = uri.pathSegments
-        println("path$path")
-        val urlfinal = "https://www.instagram.com/"+path[0]+"/"+path[1]+"/?__a=1"
-        println(urlfinal)
-        val requestQueue = Volley.newRequestQueue(context)
-        val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, urlfinal,null,
-            { response->
-            Log.e("JSON", response.toString())
-
-
-            },
-            { error ->
-            Log.e("Error", error.message.toString())
-            })
-        requestQueue.add(jsonObjectRequest)
-    }
-
     fun getDownloadableUrl(url: String?){
         val uri: Uri
         uri = Uri.parse(url)
         val path = uri.pathSegments
-        println("path$path")
-        val urlfinal = "https://www.instagram.com/"+path[0]+"/"+path[1]+"/?__a=1"
-        println(urlfinal)
-       val requestQueue = Volley.newRequestQueue(context)
+        println(path[0])
+        if (path[0].equals("p") or path[0].equals("reel")){
+            println("path$path")
+            val urlfinal = "https://www.instagram.com/" + path[0] + "/" + path[1] + "/?__a=1"
+            println(urlfinal)
+            val requestQueue = Volley.newRequestQueue(context)
+            val stringRequest =
+                object : StringRequest(Method.GET, urlfinal, Response.Listener<String>
+                { response ->
+                    var jsonresponse: String = response.toString()
+                    var video_url = ""
+                    var pic_url = ""
+                    try {
+                        Log.d("jsonresponse", "getDownloadableUrl: $jsonresponse")
+                        val json = JSONObject(jsonresponse)
+                        val ur0 = json.getJSONObject("graphql").getJSONObject("shortcode_media")
+                            .getJSONArray("display_resources")
+                        val jsonobject2 = ur0.getJSONObject(2)
+                        pic_url = jsonobject2.getString("src")
+                        Log.d("pic", pic_url);
+                        Toast.makeText(activity, "Download Link generated", Toast.LENGTH_LONG)
+                            .show()
+                        imgvidcard?.visibility = View.VISIBLE
+                        progress?.visibility = View.GONE
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                    try {
+                        val json = JSONObject(jsonresponse)
+                        video_url = json.getJSONObject("graphql").getJSONObject("shortcode_media")
+                            .getString("video_url")
+                        downloadableurl = video_url
+                        Log.e("vid_url", video_url);
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                    if (video_url != "") {
+                        videoView.visibility = View.VISIBLE
+                        imageview.visibility = View.GONE
+                        videoView.setVideoURI(Uri.parse(video_url))
+                        mediaController = MediaController(context)
+                        mediaController.setAnchorView(videoView)
+                        videoView.setMediaController(mediaController)
+                        videoView.setOnPreparedListener {
+                            progress?.visibility = View.GONE
+                            it.isLooping = false
+                            it.start()
+                        }
+                    } else {
+                        videoView.visibility = View.GONE
+                        imageview.visibility = View.VISIBLE
+                        Glide
+                            .with(this)
+                            .load(pic_url)
+                            .centerCrop()
+                            .placeholder(R.drawable.ic_launcher_background)
+                            .into(imageview);
+                    }
+                },
+                    Response.ErrorListener { error ->
+                        Log.e("Error", error.message.toString())
+                        eturl?.setError("Something Went Wrong")
 
-        val stringRequest=object :StringRequest(Method.GET,urlfinal,Response.Listener<String>
-        {response ->
-                var jsonresponse:String=response.toString()
-                var video_url=""
-                var pic_url=""
-
-                try {
-                    Log.d("jsonresponse", "getDownloadableUrl: $jsonresponse")
-                    val json = JSONObject(jsonresponse)
-                    val ur0 = json.getJSONObject("graphql").getJSONObject("shortcode_media")
-                        .getJSONArray("display_resources")
-                    val jsonobject2 = ur0.getJSONObject(2)
-                    pic_url = jsonobject2.getString("src")
-                    Log.d("pic", pic_url);
-                }catch (e:Exception)
-                {
-                    e.printStackTrace()
-                }
-
-            try {
-                val json = JSONObject(jsonresponse)
-                video_url = json.getJSONObject("graphql").getJSONObject("shortcode_media")
-                    .getString("video_url")
-                downloadableurl=video_url
-                Log.e("vid_url", video_url);
-            }catch (e:Exception)
-            {
-                e.printStackTrace()
-            }
-
-
-            if (video_url!=""){
-                    videoView.visibility =View.VISIBLE
-                    imageview.visibility=View.GONE
-
-                videoView.setVideoURI(Uri.parse(video_url))
-                mediaController= MediaController(context)
-                mediaController.setAnchorView(videoView)
-                videoView.setMediaController(mediaController)
-
-                videoView.setOnPreparedListener {
-                    progress?.visibility = View.GONE
-                   it.isLooping=false
-                    it.start()
-                }
-                }else
-            {
-                videoView.visibility =View.GONE
-                imageview.visibility=View.VISIBLE
-                Glide
-                    .with(this)
-                    .load(pic_url)
-                    .centerCrop()
-                    .placeholder(R.drawable.ic_launcher_background)
-                    .into(imageview);
-            }
-
-
-
-        },
-            Response.ErrorListener { error ->
-                Log.e("Error", error.message.toString())
-                eturl?.setError("")
-
-            }) {
-            override fun getHeaders(): Map<String, String> {
-                val headers = HashMap<String, String>()
+                    }) {
+                    override fun getHeaders(): Map<String, String> {
+                        val headers = HashMap<String, String>()
 //                headers["Content-Type"] = "application/json"
-                headers["User-Agent"] = "Chrome/91.0.4472.77 Mobile"
-                return headers
-            }
+                        headers["User-Agent"] = "Chrome/91.0.4472.77 Mobile"
+                        return headers
+                    }
+                }
+            requestQueue.add(stringRequest)
         }
-        requestQueue.add(stringRequest)
+        else {
+            Toast.makeText(activity, "Link Not Supported", Toast.LENGTH_LONG).show()
+            progress?.visibility = View.GONE
 
+        }
     }
 
 

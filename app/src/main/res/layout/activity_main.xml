@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent"
+
     tools:context=".MainActivity">
 
 
@@ -12,7 +13,10 @@
         android:id="@+id/tablayout"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        app:tabTextColor="@color/white"
+        app:tabIndicatorColor="@color/white"
         app:tabGravity="fill"
+        android:background="@drawable/fst_gradient"
         app:tabInlineLabel="true"
         app:tabMode="fixed"
         >
