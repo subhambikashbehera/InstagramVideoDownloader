@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         app:cardCornerRadius="12dp"
         android:layout_margin="12dp"
-
+        android:backgroundTint="#F3F0F1"
         android:layout_height="wrap_content">
 
    <LinearLayout
