@@ -46,8 +46,9 @@
                 app:icon="@drawable/ic_clipboard"
                 android:layout_gravity="center"
                 android:layout_margin="12dp"
+
                 android:text="PASTE LINK"
-                style="@style/Widget.MaterialComponents.Button.TextButton"/>
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

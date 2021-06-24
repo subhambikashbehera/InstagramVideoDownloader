@@ -1,6 +1,7 @@
 package com.subhambikashsubhamgupta.instagramdownloader
 
 import android.content.pm.PackageManager
+import android.media.MediaMetadataRetriever
 import android.media.ThumbnailUtils
 import android.net.Uri
 import android.os.Bundle
@@ -69,9 +70,9 @@ class HistoryFragment : Fragment() {
                 val urlthumb = rs.getString(rs.getColumnIndex(MediaStore.Video.Thumbnails.DATA))
 
                 val uriss= Uri.fromFile(File(url))
-                val bMap = ThumbnailUtils.createVideoThumbnail(uriss.toString(),
-                    MediaStore.Video.Thumbnails.MICRO_KIND)
-
+                val mMMR = MediaMetadataRetriever()
+                mMMR.setDataSource(context, uriss)
+                var bMap = mMMR.frameAtTime
                 listvideos.add(HistoryModel(uriss,bMap!!))
 
             }
