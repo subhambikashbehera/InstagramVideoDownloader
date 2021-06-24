@@ -85,7 +85,7 @@ class HistoryFragment : Fragment() {
         val selection = MediaStore.Video.Media.DATA + " like?"
         val selectionArgs = arrayOf("%Instagram Downloader%")
 
-       // var rs=context?.contentResolver?.query(uri,cols,null,null,null)
+        // var rs=context?.contentResolver?.query(uri,cols,null,null,null)
 
         val rs = context?.contentResolver?.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
             cols, selection, selectionArgs, MediaStore.Video.Media._ID + " DESC");
