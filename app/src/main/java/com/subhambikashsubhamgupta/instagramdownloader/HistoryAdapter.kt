@@ -35,7 +35,7 @@ class HistoryAdapter: RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>{
 
         Log.d("bitmap", "onBindViewHolder: ${list.urlthum}")
         holder.imageView.setImageBitmap(list.urlthum)
-      //  Picasso.get().load(list.url).into(holder.imageView);
+
     }
 
     override fun getItemCount(): Int = models.size
@@ -45,5 +45,17 @@ class HistoryAdapter: RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>{
         var  imageView = itemView.findViewById<ImageView>(R.id.imageView2)
 
 
+    }
+
+
+
+    fun clear() {
+        models.clear()
+        notifyDataSetChanged()
+    }
+
+    fun addAll(videolist:List<HistoryModel>) {
+        models.addAll(videolist)
+        notifyDataSetChanged()
     }
 }

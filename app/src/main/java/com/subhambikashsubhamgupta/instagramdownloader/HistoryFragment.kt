@@ -15,11 +15,17 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
+import java.lang.Exception
 
 
 class HistoryFragment : Fragment() {
-
+    lateinit var swipeContainer: SwipeRefreshLayout
     private var listvideos= arrayListOf<HistoryModel>()
     private lateinit var historyAdapter:HistoryAdapter
     private lateinit var recyclerView: RecyclerView
@@ -28,6 +34,7 @@ class HistoryFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
         // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_history, container, false)
     }
 
@@ -44,13 +51,36 @@ class HistoryFragment : Fragment() {
         }
         else
         {
-            loadvideo()
+            try {
+                CoroutineScope(Dispatchers.IO).launch {loadvideo() }
+                historyAdapter.notifyDataSetChanged()
+            }catch (e:Exception)
+            {
+                e.printStackTrace()
+            }
+
         }
-        historyAdapter.notifyDataSetChanged()
+
+
+
+        swipeContainer = view.findViewById(R.id.swipeContainer)
+        swipeContainer.setOnRefreshListener {
+            historyAdapter.clear()
+            historyAdapter.addAll(listvideos)
+            CoroutineScope(Dispatchers.IO).launch {loadvideo() }
+            swipeContainer.setRefreshing(false)
+        }
+
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+            android.R.color.holo_green_light,
+            android.R.color.holo_orange_light,
+            android.R.color.holo_red_light)
+
     }
 
-    private fun loadvideo() {
 
+
+    private suspend fun loadvideo() {
 
         val cols= listOf<String>(MediaStore.Video.Media.DATA,MediaStore.Video.Thumbnails.DATA).toTypedArray()
         val selection = MediaStore.Video.Media.DATA + " like?"
@@ -68,20 +98,20 @@ class HistoryFragment : Fragment() {
             {
                 val url = rs.getString(rs.getColumnIndex(MediaStore.Video.Media.DATA))
                 val urlthumb = rs.getString(rs.getColumnIndex(MediaStore.Video.Thumbnails.DATA))
-
                 val uriss= Uri.fromFile(File(url))
                 val mMMR = MediaMetadataRetriever()
                 mMMR.setDataSource(context, uriss)
                 var bMap = mMMR.frameAtTime
                 listvideos.add(HistoryModel(uriss,bMap!!))
-
+            }
+            withContext(Dispatchers.Main){
+                historyAdapter= activity?.let { HistoryAdapter(listvideos, it) }!!
+                recyclerView.adapter=historyAdapter
+                var layout=GridLayoutManager(context,3)
+                recyclerView.layoutManager=layout
+                historyAdapter.notifyDataSetChanged()
             }
 
-            historyAdapter= activity?.let { HistoryAdapter(listvideos, it) }!!
-            recyclerView.adapter=historyAdapter
-            var layout=GridLayoutManager(context,3)
-            recyclerView.layoutManager=layout
-            historyAdapter.notifyDataSetChanged()
         }
 
     }

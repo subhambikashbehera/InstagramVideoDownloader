@@ -170,7 +170,6 @@ class DownloadFragment : Fragment() {
                     progress?.visibility = View.GONE
                    it.isLooping=false
                     it.start()
-
                 }
                 }else
             {
