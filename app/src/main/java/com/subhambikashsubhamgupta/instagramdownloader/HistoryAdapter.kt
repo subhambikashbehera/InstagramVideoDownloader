@@ -1,16 +1,16 @@
 package com.subhambikashsubhamgupta.instagramdownloader
 
 import android.content.Context
-import android.graphics.BitmapFactory
+import android.content.Intent
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.MediaController
-import android.widget.VideoView
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
 
 
 class HistoryAdapter: RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>{
@@ -35,6 +35,13 @@ class HistoryAdapter: RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>{
 
         Log.d("bitmap", "onBindViewHolder: ${list.urlthum}")
         holder.imageView.setImageBitmap(list.urlthum)
+
+        holder.imageView.setOnClickListener {
+            val intent=Intent(context,fullvideo::class.java)
+            intent.putExtra("video",list.url.toString())
+            context.startActivity(intent)
+        }
+
 
     }
 
