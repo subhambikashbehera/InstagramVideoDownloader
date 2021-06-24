@@ -1,7 +1,9 @@
 package com.subhambikashsubhamgupta.instagramdownloader
 
+import android.graphics.Bitmap
+import android.net.Uri
+
 data class HistoryModel (
-    var title: String,
-    var link: String,
-    var img: String
+    var url: Uri,
+    var urlthum:Bitmap
     )

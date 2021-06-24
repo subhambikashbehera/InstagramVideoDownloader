@@ -1,12 +1,17 @@
 package com.subhambikashsubhamgupta.instagramdownloader
 
 import android.content.Context
+import android.graphics.BitmapFactory
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
+import android.widget.ImageView
+import android.widget.MediaController
+import android.widget.VideoView
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
+
 
 class HistoryAdapter: RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>{
 
@@ -25,19 +30,20 @@ class HistoryAdapter: RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>{
     }
 
     override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
-       var list=models[position]
-        holder.title.text = list.title
-        holder.link.text =list.link
+       val list=models[position]
+
+
+        Log.d("bitmap", "onBindViewHolder: ${list.urlthum}")
+        holder.imageView.setImageBitmap(list.urlthum)
+      //  Picasso.get().load(list.url).into(holder.imageView);
     }
 
     override fun getItemCount(): Int = models.size
 
 
     inner class HistoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var  title = itemView.findViewById<TextView>(R.id.titletv)
-        var link = itemView.findViewById<TextView>(R.id.linktv)
-        var share = itemView.findViewById<Button>(R.id.share)
-        var play = itemView.findViewById<Button>(R.id.play)
+        var  imageView = itemView.findViewById<ImageView>(R.id.imageView2)
+
 
     }
 }

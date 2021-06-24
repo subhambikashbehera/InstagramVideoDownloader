@@ -28,6 +28,7 @@ import org.json.JSONObject
 
 class DownloadFragment : Fragment() {
 
+
     private var download: Button? = null
     private var share: Button? = null
     private var fromclip: Button? = null
@@ -228,6 +229,9 @@ class DownloadFragment : Fragment() {
         inputManager.hideSoftInputFromWindow(activity?.currentFocus?.windowToken,
             InputMethodManager.SHOW_FORCED)
     }
+
+
+
 
 
 }
