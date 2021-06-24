@@ -192,14 +192,14 @@ class DownloadFragment : Fragment() {
         }
     }
     private fun share(context: Context, link: String) {
-        try {
-            var path = MediaStore.Images.Media.insertImage(
-                activity?.getContentResolver(),
-                arrImagePath.get(slidePager.getCurrentItem()), "Title", null
-            )
-        } catch (e1: FileNotFoundException) {
-            e1.printStackTrace()
-        }
+//        try {
+//            var path = MediaStore.Images.Media.insertImage(
+//                activity?.getContentResolver(),
+//                arrImagePath.get(slidePager.getCurrentItem()), "Title", null
+//            )
+//        } catch (e1: FileNotFoundException) {
+//            e1.printStackTrace()
+//        }
         val intent = Intent(Intent.ACTION_SEND)
         intent.type = "*/*"
         intent.putExtra(Intent.EXTRA_SUBJECT, "Share")
