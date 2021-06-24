@@ -94,9 +94,7 @@
             android:layout_marginBottom="12dp"
             android:layout_gravity="center"
             android:layout_height="350dp">
-
-
-              <VideoView
+            <VideoView
                   android:id="@+id/videoView2"
                   android:layout_alignParentTop="true"
                   android:layout_alignParentBottom="true"
@@ -117,8 +115,9 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             app:cardCornerRadius="25dp"
-           android:layout_marginStart="12dp"
-
+            android:id="@+id/mcard"
+            android:layout_marginStart="12dp"
+            android:visibility="gone"
             android:layout_marginEnd="12dp"
             android:layout_height="wrap_content">
             <LinearLayout

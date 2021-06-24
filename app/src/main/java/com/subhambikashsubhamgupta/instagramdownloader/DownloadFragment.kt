@@ -1,30 +1,26 @@
 package com.subhambikashsubhamgupta.instagramdownloader
 
+import android.R.attr.path
 import android.app.DownloadManager
-import android.app.Service
 import android.content.*
-import android.content.Context.CLIPBOARD_SERVICE
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.text.Editable
-import android.text.SpannableString
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
-import com.android.volley.Request
 import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.google.android.material.card.MaterialCardView
 import org.json.JSONObject
+import java.io.FileNotFoundException
 
 
 class DownloadFragment : Fragment() {
@@ -35,12 +31,14 @@ class DownloadFragment : Fragment() {
     private var fromclip: Button? = null
     private var progress: ProgressBar? = null
     private var imgvidcard: MaterialCardView? = null
+    private var mcard: MaterialCardView? = null
     private var eturl: EditText? = null
     lateinit var imageview:ImageView
     lateinit var mediaController: MediaController
     private lateinit var videoView: VideoView
     lateinit var generate:Button
     var downloadableurl=""
+    var filename = ""
     var id:Long=0
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,8 +60,8 @@ class DownloadFragment : Fragment() {
         progress=view.findViewById(R.id.progress)
         fromclip=view.findViewById(R.id.pastefromclip)
         imgvidcard=view.findViewById(R.id.m2card)
+        mcard=view.findViewById(R.id.mcard)
         progress?.isIndeterminate = true
-
 
         generate.setOnClickListener {
             hidekeyboard()
@@ -77,12 +75,13 @@ class DownloadFragment : Fragment() {
 
         download?.setOnClickListener {
             videoView.start()
-            activity?.applicationContext?.let { downloadFile(it,"instasaver.mp4",downloadableurl) }
+            activity?.applicationContext?.let { downloadFile(it,downloadableurl) }
         }
         fromclip?.setOnClickListener {
             val clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             eturl?.setText(clipboard.text as String?)
         }
+
 
 
 
@@ -93,6 +92,9 @@ class DownloadFragment : Fragment() {
                 if (getid==id)
                 {
                     Toast.makeText(activity,"download complete",Toast.LENGTH_SHORT).show()
+                    share?.setOnClickListener {
+                        activity?.applicationContext?.let { it1 -> share(it1,"" ) }
+                    }
                 }
 
             }
@@ -131,6 +133,7 @@ class DownloadFragment : Fragment() {
                         Toast.makeText(activity, "Download Link generated", Toast.LENGTH_LONG)
                             .show()
                         imgvidcard?.visibility = View.VISIBLE
+                        mcard?.visibility = View.VISIBLE
                         progress?.visibility = View.GONE
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -140,6 +143,7 @@ class DownloadFragment : Fragment() {
                         video_url = json.getJSONObject("graphql").getJSONObject("shortcode_media")
                             .getString("video_url")
                         downloadableurl = video_url
+
                         Log.e("vid_url", video_url);
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -187,21 +191,37 @@ class DownloadFragment : Fragment() {
 
         }
     }
+    private fun share(context: Context, link: String) {
+        try {
+            var path = MediaStore.Images.Media.insertImage(
+                activity?.getContentResolver(),
+                arrImagePath.get(slidePager.getCurrentItem()), "Title", null
+            )
+        } catch (e1: FileNotFoundException) {
+            e1.printStackTrace()
+        }
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "*/*"
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Share")
+
+        context.startActivity(Intent.createChooser(intent, "Share via"))
+    }
 
 
 
-    fun downloadFile(context: Context, fileName: String?, url: String?) {
+    fun downloadFile(context: Context, url: String?) {
         if (url != null) {
             Log.e("url",url)
         }
-
+        //String name = filename.replaceAll("[^a-zA-Z0-9]", "");
+        filename = (System.currentTimeMillis() / 1000).toString()
         val request=DownloadManager.Request(Uri.parse(url))
             .setTitle("Instagram ReelDownloader")
             .setDescription("Video is Downloading")
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
             .setAllowedOverMetered(true)
             .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
-                "Instagram Downloader/$fileName")
+                "Instagram Downloader/$filename.mp4")
 
         val dm=context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         id=dm.enqueue(request)
