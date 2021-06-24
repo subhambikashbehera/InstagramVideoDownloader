@@ -68,7 +68,6 @@ class HistoryFragment : Fragment() {
             historyAdapter.clear()
             historyAdapter.addAll(listvideos)
             CoroutineScope(Dispatchers.IO).launch {loadvideo() }
-            swipeContainer.setRefreshing(false)
         }
 
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -86,10 +85,10 @@ class HistoryFragment : Fragment() {
         val selection = MediaStore.Video.Media.DATA + " like?"
         val selectionArgs = arrayOf("%Instagram Downloader%")
 
-       // var rs=context?.contentResolver?.query(uri,cols,null,null,null)
+        // var rs=context?.contentResolver?.query(uri,cols,null,null,null)
 
         val rs = context?.contentResolver?.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-            cols, selection, selectionArgs, MediaStore.Video.Media.DATE_TAKEN + " DESC");
+            cols, selection, selectionArgs, MediaStore.Video.Media._ID + " DESC");
 
 
         if (rs!=null)
@@ -110,6 +109,7 @@ class HistoryFragment : Fragment() {
                 var layout=GridLayoutManager(context,3)
                 recyclerView.layoutManager=layout
                 historyAdapter.notifyDataSetChanged()
+                swipeContainer.setRefreshing(false)
             }
 
         }

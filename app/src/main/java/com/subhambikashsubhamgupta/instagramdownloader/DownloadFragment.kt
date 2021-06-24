@@ -9,7 +9,11 @@ import android.os.Bundle
 import android.os.Environment
 import android.text.Editable
 import android.text.SpannableString
+import android.transition.ChangeBounds
+import android.transition.Slide
+import android.transition.TransitionManager
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +27,7 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
+import com.google.android.material.card.MaterialCardView
 import org.json.JSONObject
 
 
@@ -33,6 +38,7 @@ class DownloadFragment : Fragment() {
     private var share: Button? = null
     private var fromclip: Button? = null
     private var progress: ProgressBar? = null
+    private var imgvidcard: MaterialCardView? = null
     private var eturl: EditText? = null
     lateinit var imageview:ImageView
     lateinit var mediaController: MediaController
@@ -59,6 +65,8 @@ class DownloadFragment : Fragment() {
         share=view.findViewById(R.id.share)
         progress=view.findViewById(R.id.progress)
         fromclip=view.findViewById(R.id.pastefromclip)
+        imgvidcard=view.findViewById(R.id.m2card)
+
         progress?.isIndeterminate = true
 
 
@@ -76,6 +84,7 @@ class DownloadFragment : Fragment() {
             val clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             eturl?.setText(clipboard.text as String?)
         }
+
 
 
 
@@ -125,7 +134,7 @@ class DownloadFragment : Fragment() {
         val urlfinal = "https://www.instagram.com/"+path[0]+"/"+path[1]+"/?__a=1"
         println(urlfinal)
        val requestQueue = Volley.newRequestQueue(context)
-
+        eturl?.setError(null)
         val stringRequest=object :StringRequest(Method.GET,urlfinal,Response.Listener<String>
         {response ->
                 var jsonresponse:String=response.toString()
@@ -140,9 +149,11 @@ class DownloadFragment : Fragment() {
                     val jsonobject2 = ur0.getJSONObject(2)
                     pic_url = jsonobject2.getString("src")
                     Log.d("pic", pic_url);
+                    imgvidcard?.visibility = View.VISIBLE
                 }catch (e:Exception)
                 {
                     e.printStackTrace()
+
                 }
 
             try {
@@ -154,6 +165,7 @@ class DownloadFragment : Fragment() {
             }catch (e:Exception)
             {
                 e.printStackTrace()
+
             }
 
 
@@ -189,6 +201,8 @@ class DownloadFragment : Fragment() {
             Response.ErrorListener { error ->
                 Log.e("Error", error.message.toString())
                 eturl?.setError("")
+                progress?.visibility = View.GONE
+                imgvidcard?.visibility = View.GONE
 
             }) {
             override fun getHeaders(): Map<String, String> {
