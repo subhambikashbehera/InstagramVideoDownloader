@@ -4,30 +4,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_marginTop="12dp"
+
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".DownloadFragment">
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/mcard"
         android:layout_width="match_parent"
-        android:layout_margin="12dp"
         app:cardCornerRadius="12dp"
+        android:layout_margin="12dp"
+
         android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_height="match_parent">
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:orientation="vertical"
+       android:layout_height="match_parent">
 
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            app:boxStrokeWidth="3dp"
-            app:boxStrokeWidthFocused="3dp"
-            app:errorEnabled="true"
-
+            android:layout_margin="8dp"
+            app:boxStrokeWidth="4dp"
+            app:boxStrokeWidthFocused="4dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusTopStart="12dp"
             app:endIconMode="clear_text"
             app:startIconDrawable="@drawable/ic_clipboard"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -40,19 +42,19 @@
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/progress"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:trackCornerRadius="2dp"
         android:layout_marginEnd="12dp"
         android:layout_marginStart="12dp"
         android:visibility="gone"
         android:layout_gravity="center"
         app:indeterminateAnimationType="disjoint"
-        app:indicatorColor="@color/purple_200"
-        app:trackColor="@color/purple_500" />
+        app:indicatorColor="@color/purple_200" />
         <LinearLayout
             android:layout_width="match_parent"
             android:orientation="horizontal"
             android:gravity="center"
+            android:padding="8dp"
             android:layout_height="wrap_content">
             <Button
                 android:id="@+id/pastefromclip"
@@ -60,7 +62,7 @@
                 android:layout_height="wrap_content"
                 app:icon="@drawable/ic_clipboard"
                 android:layout_gravity="center"
-                android:layout_margin="12dp"
+                android:textSize="15dp"
                 app:strokeWidth="2dp"
                 app:strokeColor="@color/purple_200"
                 android:text="PASTE LINK"
@@ -70,30 +72,29 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/generate"
                 app:icon="@drawable/ic_generate"
-                app:strokeColor="@color/purple_200"
-                app:strokeWidth="2dp"
                 android:layout_gravity="center"
-                android:layout_margin="12dp"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                app:strokeWidth="2dp"
+                android:textSize="15dp"
+                app:strokeColor="@color/purple_200"
+               android:layout_marginStart="8dp"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:text="Generate"
                />
         </LinearLayout>
-        </LinearLayout>
+   </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
         <com.google.android.material.card.MaterialCardView
             android:layout_width="wrap_content"
             app:cardCornerRadius="12dp"
-            android:id="@+id/imgvidcard"
-            app:cardElevation="8dp"
+            android:id="@+id/m2card"
+            android:visibility="gone"
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
-            android:visibility="gone"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="12dp"
             android:layout_gravity="center"
             android:layout_height="350dp">
-
-              <VideoView
+            <VideoView
                   android:id="@+id/videoView2"
                   android:layout_alignParentTop="true"
                   android:layout_alignParentBottom="true"
@@ -110,14 +111,13 @@
                   android:layout_height="match_parent"
                   android:visibility="visible"
                   tools:src="@tools:sample/avatars" />
-
-
-        </com.google.android.material.card.MaterialCardView>
+          </com.google.android.material.card.MaterialCardView>
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             app:cardCornerRadius="25dp"
-            android:id="@+id/m2card"
-           android:layout_marginStart="12dp"
+            android:id="@+id/mcard"
+            android:layout_marginStart="12dp"
+            android:visibility="gone"
             android:layout_marginEnd="12dp"
             android:layout_height="wrap_content">
             <LinearLayout
@@ -129,6 +129,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:icon="@drawable/ic_share"
+                    android:textSize="15dp"
                     android:text="share"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     />
@@ -137,6 +138,7 @@
                     android:layout_height="wrap_content"
                     app:icon="@drawable/ic_download"
                     android:id="@+id/download"
+                    android:textSize="15dp"
                     android:layout_marginStart="32dp"
                     android:text="Download"
                     style="@style/Widget.MaterialComponents.Button.TextButton"/>
