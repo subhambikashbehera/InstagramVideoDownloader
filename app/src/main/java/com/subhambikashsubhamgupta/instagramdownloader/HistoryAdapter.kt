@@ -54,7 +54,7 @@ class HistoryAdapter: RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>{
             intent1.putExtra(Intent.EXTRA_SUBJECT, "REEL DOWNLOADER")
             val shareMessage=list.url
             intent1.putExtra(Intent.EXTRA_STREAM, shareMessage)
-            val shareMessage2="https://play.google.com/store/apps/details?id="+BuildConfig.APPLICATION_ID+"\n\n";
+            val shareMessage2="https://play.google.com/store/apps/details?id="+BuildConfig.APPLICATION_ID+"\n\n"
             intent1.putExtra(Intent.EXTRA_TEXT, shareMessage2)
             context.startActivity(Intent.createChooser(intent1, "share by"))
         }

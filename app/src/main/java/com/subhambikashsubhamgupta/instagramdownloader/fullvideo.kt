@@ -28,7 +28,7 @@ class fullvideo : AppCompatActivity() {
 
         val toolbar=findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        Objects.requireNonNull(supportActionBar)!!.setDisplayHomeAsUpEnabled(true)
+        Objects.requireNonNull(supportActionBar)?.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
 
 
