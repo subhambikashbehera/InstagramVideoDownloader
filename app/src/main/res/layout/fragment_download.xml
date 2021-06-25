@@ -10,7 +10,6 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         app:cardCornerRadius="12dp"
-        android:forceDarkAllowed="true"
         android:layout_margin="12dp"
         android:backgroundTint="#F3F0F1"
         android:layout_height="wrap_content">
@@ -19,29 +18,28 @@
        android:layout_width="match_parent"
        android:orientation="vertical"
        android:layout_height="match_parent">
+
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            app:boxStrokeWidth="1.5dp"
-            app:boxStrokeWidthFocused="1.5dp"
+            app:boxStrokeWidth="2dp"
+            app:boxStrokeWidthFocused="3dp"
             app:boxCornerRadiusTopEnd="12dp"
             app:boxCornerRadiusBottomEnd="12dp"
             app:boxCornerRadiusBottomStart="12dp"
             app:boxCornerRadiusTopStart="12dp"
             app:endIconMode="clear_text"
-            android:textColorHint="@color/black"
             app:helperTextEnabled="true"
             app:errorEnabled="true"
-            app:endIconTint="@color/black"
+            android:forceDarkAllowed="false"
             app:boxStrokeErrorColor="#FF0000"
-            app:startIconTint="@color/black"
             app:startIconDrawable="@drawable/ic_clipboard"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:hint="Paste Link Here">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/eturl"
-                android:textColor="@color/black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </com.google.android.material.textfield.TextInputLayout>
