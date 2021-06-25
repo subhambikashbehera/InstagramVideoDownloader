@@ -21,6 +21,29 @@
             />
 
         <ImageView
+            android:background="@drawable/ic_baseline_play_circle_outline_24"
+            android:elevation="10dp"
+            android:layout_centerInParent="true"
+            android:id="@+id/imageVi"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            />
+
+        <ImageView
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:id="@+id/sharevideo"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/share"
+            android:layout_alignParentBottom="true"
+            android:elevation="10dp" />
+
+
+        <ImageView
             android:scaleType="fitXY"
             android:id="@+id/imageView2"
             android:layout_width="match_parent"

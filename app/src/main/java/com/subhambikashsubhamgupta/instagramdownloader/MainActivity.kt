@@ -1,17 +1,23 @@
 package com.subhambikashsubhamgupta.instagramdownloader
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
+
 class MainActivity : AppCompatActivity() {
 
+    var is_permission=false
     lateinit var viewPager: ViewPager2
     lateinit var tablayout: TabLayout
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +39,11 @@ class MainActivity : AppCompatActivity() {
 
         }.attach()
 
-    }
+    checkpermisson()
+
+
+
+}
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -47,12 +57,14 @@ class MainActivity : AppCompatActivity() {
             R.id.shareapp->
             {
                 try {
+
                     val intent1 = Intent(Intent.ACTION_SEND)
                     intent1.type = "text/plain"
                     intent1.putExtra(Intent.EXTRA_SUBJECT, "REEL DOWNLOADER")
                      val shareMessage="https://play.google.com/store/apps/details?id="+BuildConfig.APPLICATION_ID+"\n\n";
                     intent1.putExtra(Intent.EXTRA_TEXT, shareMessage)
                     startActivity(Intent.createChooser(intent1, "share by"))
+
                 } catch (e: Exception) {
                     Toast.makeText(this@MainActivity, "error occured", Toast.LENGTH_SHORT).show()
                 }
@@ -65,6 +77,34 @@ class MainActivity : AppCompatActivity() {
 
         return true
 
+    }
+
+
+    fun checkpermisson(){
+
+        if (ActivityCompat.checkSelfPermission(this,android.Manifest.permission.READ_EXTERNAL_STORAGE)  != PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),103)
+
+        }
+
+    }
+
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode==103 && grantResults[0] != PackageManager.PERMISSION_GRANTED)
+        {
+            Toast.makeText(this,"Permisssion is needed for Downloading and showing the videos",Toast.LENGTH_LONG).show()
+            checkpermisson()
+        }else
+        {
+            Toast.makeText(this,"Welcome",Toast.LENGTH_SHORT).show()
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
 }

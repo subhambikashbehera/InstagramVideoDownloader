@@ -1,5 +1,6 @@
 package com.subhambikashsubhamgupta.instagramdownloader
 
+import android.Manifest
 import android.content.pm.PackageManager
 import android.media.MediaMetadataRetriever
 import android.media.ThumbnailUtils
@@ -9,6 +10,7 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -25,6 +27,7 @@ import java.lang.Exception
 
 
 class HistoryFragment : Fragment() {
+    private lateinit var progressBar: ProgressBar
     lateinit var swipeContainer: SwipeRefreshLayout
     private var listvideos= arrayListOf<HistoryModel>()
     private lateinit var historyAdapter:HistoryAdapter
@@ -41,7 +44,7 @@ class HistoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView=view.findViewById(R.id.recycle)
-
+        progressBar=view.findViewById(R.id.progressBarcircle)
 
         if (activity?.let { ContextCompat.checkSelfPermission(it,android.Manifest.permission.READ_EXTERNAL_STORAGE) } != PackageManager.PERMISSION_GRANTED)
         {
@@ -52,7 +55,8 @@ class HistoryFragment : Fragment() {
         {
             try {
                 CoroutineScope(Dispatchers.IO).launch {loadvideo() }
-                historyAdapter.notifyDataSetChanged()
+                Toast.makeText(activity, "Swipe Down to Refresh", Toast.LENGTH_LONG)
+                    .show()
             }catch (e:Exception)
             {
                 e.printStackTrace()
@@ -64,10 +68,16 @@ class HistoryFragment : Fragment() {
 
         swipeContainer = view.findViewById(R.id.swipeContainer)
         swipeContainer.setOnRefreshListener {
-
-            historyAdapter.clear()
-            historyAdapter.addAll(listvideos)
-            CoroutineScope(Dispatchers.IO).launch {loadvideo() }
+            try {
+                historyAdapter.clear()
+                historyAdapter.addAll(listvideos)
+                CoroutineScope(Dispatchers.IO).launch {loadvideo() }
+            }catch (e:Exception)
+            {
+                e.printStackTrace()
+            }
+            Toast.makeText(activity, "Wait Loading", Toast.LENGTH_SHORT)
+                .show()
         }
 
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -100,10 +110,11 @@ class HistoryFragment : Fragment() {
                 val url = rs.getString(rs.getColumnIndex(MediaStore.Video.Media.DATA))
                 val urlthumb = rs.getString(rs.getColumnIndex(MediaStore.Video.Thumbnails.DATA))
                 val uriss= Uri.fromFile(File(url))
+                val file=File(url)
                 val mMMR = MediaMetadataRetriever()
                 mMMR.setDataSource(context, uriss)
                 var bMap = mMMR.frameAtTime
-                listvideos.add(HistoryModel(uriss,bMap!!))
+                listvideos.add(HistoryModel(uriss,bMap!!,file))
             }
             withContext(Dispatchers.Main){
                 historyAdapter= activity?.let { HistoryAdapter(listvideos, it) }!!
@@ -112,6 +123,7 @@ class HistoryFragment : Fragment() {
                 recyclerView.layoutManager=layout
                 historyAdapter.notifyDataSetChanged()
                 swipeContainer.setRefreshing(false)
+                progressBar.visibility=View.GONE
             }
 
         }

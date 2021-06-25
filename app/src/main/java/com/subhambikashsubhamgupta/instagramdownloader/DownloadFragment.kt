@@ -1,18 +1,19 @@
 package com.subhambikashsubhamgupta.instagramdownloader
 
-import android.R.attr.path
 import android.app.DownloadManager
 import android.content.*
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -20,11 +21,9 @@ import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.google.android.material.card.MaterialCardView
 import org.json.JSONObject
-import java.io.FileNotFoundException
 
 
 class DownloadFragment : Fragment() {
-
 
     private var download: Button? = null
     private var share: Button? = null
@@ -63,8 +62,18 @@ class DownloadFragment : Fragment() {
         mcard=view.findViewById(R.id.mcard)
         progress?.isIndeterminate = true
 
+
+
+
+
+
+
+
+
+
         generate.setOnClickListener {
             hidekeyboard()
+            checkpermission()
             if(eturl?.text.toString().isNotEmpty()){
                 progress?.visibility = View.VISIBLE
                 eturl?.error = null
@@ -130,8 +139,7 @@ class DownloadFragment : Fragment() {
                         val jsonobject2 = ur0.getJSONObject(2)
                         pic_url = jsonobject2.getString("src")
                         Log.d("pic", pic_url);
-                        Toast.makeText(activity, "Download Link generated", Toast.LENGTH_LONG)
-                            .show()
+
                         imgvidcard?.visibility = View.VISIBLE
                         mcard?.visibility = View.VISIBLE
                         progress?.visibility = View.GONE
@@ -236,6 +244,15 @@ class DownloadFragment : Fragment() {
             InputMethodManager.SHOW_FORCED)
     }
 
+
+    fun checkpermission()
+    {
+        if (activity?.let { ContextCompat.checkSelfPermission(it,android.Manifest.permission.READ_EXTERNAL_STORAGE) } != PackageManager.PERMISSION_GRANTED)
+        {
+            activity?.let { ActivityCompat.requestPermissions(it, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),102) }
+
+        }
+    }
 
 
 
