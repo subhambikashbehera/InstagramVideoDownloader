@@ -1,15 +1,16 @@
 package com.subhambikashsubhamgupta.instagramdownloader
 
-import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -26,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         val toolbar=findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         viewPager = findViewById(R.id.viewpager1)
         tablayout = findViewById(R.id.tablayout)
         viewPager.adapter = PageAdapters(supportFragmentManager, lifecycle)
@@ -38,7 +39,12 @@ class MainActivity : AppCompatActivity() {
             }
 
         }.attach()
-
+        val uri = intent.data
+        Log.e("uri", uri.toString())
+        if (uri != null) {
+            val path = uri.pathSegments
+            println(path)
+        }
     checkpermisson()
 
 
