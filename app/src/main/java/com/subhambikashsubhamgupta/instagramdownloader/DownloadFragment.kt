@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -21,6 +22,7 @@ import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.google.android.material.card.MaterialCardView
 import org.json.JSONObject
+import java.io.File
 
 
 class DownloadFragment : Fragment() {
@@ -30,7 +32,7 @@ class DownloadFragment : Fragment() {
     private var fromclip: Button? = null
     private var progress: ProgressBar? = null
     private var imgvidcard: MaterialCardView? = null
-    private var mcard: MaterialCardView? = null
+
     private var eturl: EditText? = null
     lateinit var imageview:ImageView
     lateinit var mediaController: MediaController
@@ -59,9 +61,9 @@ class DownloadFragment : Fragment() {
         progress=view.findViewById(R.id.progress)
         fromclip=view.findViewById(R.id.pastefromclip)
         imgvidcard=view.findViewById(R.id.m2card)
-        mcard=view.findViewById(R.id.mcard)
-        progress?.isIndeterminate = true
 
+        progress?.isIndeterminate = true
+        share?.isEnabled = false
 
 
 
@@ -101,6 +103,7 @@ class DownloadFragment : Fragment() {
                 if (getid==id)
                 {
                     Toast.makeText(activity,"download complete",Toast.LENGTH_SHORT).show()
+                    share?.isEnabled = true
                     share?.setOnClickListener {
                         activity?.applicationContext?.let { it1 -> share(it1,"" ) }
                     }
@@ -113,6 +116,9 @@ class DownloadFragment : Fragment() {
         val intentFilter= IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
         activity?.registerReceiver(reciver,intentFilter)
 
+
+    }
+    fun pasteFromShared(){
 
     }
     fun getDownloadableUrl(url: String?){
@@ -141,7 +147,7 @@ class DownloadFragment : Fragment() {
                         Log.d("pic", pic_url);
 
                         imgvidcard?.visibility = View.VISIBLE
-                        mcard?.visibility = View.VISIBLE
+
                         progress?.visibility = View.GONE
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -201,19 +207,18 @@ class DownloadFragment : Fragment() {
         }
     }
     private fun share(context: Context, link: String) {
-//        try {
-//            var path = MediaStore.Images.Media.insertImage(
-//                activity?.getContentResolver(),
-//                arrImagePath.get(slidePager.getCurrentItem()), "Title", null
-//            )
-//        } catch (e1: FileNotFoundException) {
-//            e1.printStackTrace()
-//        }
-        val intent = Intent(Intent.ACTION_SEND)
-        intent.type = "*/*"
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Share")
+        val URI: Uri = FileProvider.getUriForFile(
+            context,
+            context.applicationContext.packageName + ".provider",File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),"Instagram Downloader/$filename.mp4"))
+        Log.e("file",
+            File(Environment.DIRECTORY_DOWNLOADS,"Instagram Downloader/$filename.mp4").toString())
 
-        context.startActivity(Intent.createChooser(intent, "Share via"))
+        val shareIntent = Intent()
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        shareIntent.action = Intent.ACTION_SEND
+        shareIntent.putExtra(Intent.EXTRA_STREAM, URI)
+        shareIntent.type = "video/*"
+        context.startActivity(Intent.createChooser(shareIntent, "Share Video to.."))
     }
 
 
