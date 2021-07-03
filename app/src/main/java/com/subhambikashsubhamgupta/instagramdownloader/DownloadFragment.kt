@@ -6,6 +6,8 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +17,7 @@ import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -68,12 +71,6 @@ class DownloadFragment : Fragment(), SendDataInterface{
         progress?.isIndeterminate = true
         share?.isEnabled = false
 
-
-
-
-
-
-
         val clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val url : String? = clipboard.text as String?
         if (url?.contains("www.instagram") == true){
@@ -83,10 +80,28 @@ class DownloadFragment : Fragment(), SendDataInterface{
             eturl?.error = null
             getDownloadableUrl(eturl?.text.toString())
         }
-        else
+        else{
+            progress?.visibility = View.GONE
             Toast.makeText(activity, "Invalid Link", Toast.LENGTH_LONG).show()
+        }
 
 
+        eturl?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                if (s?.contains("www.instagram") == true){
+                    hidekeyboard()
+                    progress?.visibility = View.VISIBLE
+                    eturl?.error = null
+                    getDownloadableUrl(eturl?.text.toString())
+                }
+
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+        })
         generate.setOnClickListener {
             hidekeyboard()
             checkpermission()
@@ -188,6 +203,7 @@ class DownloadFragment : Fragment(), SendDataInterface{
                     Response.ErrorListener { error ->
                         Log.e("Error", error.message.toString())
                         eturl?.setError("Something Went Wrong")
+                        Toast.makeText(activity, "Something Went Rong", Toast.LENGTH_SHORT).show()
 
                     }) {
                     override fun getHeaders(): Map<String, String> {
@@ -207,7 +223,7 @@ class DownloadFragment : Fragment(), SendDataInterface{
         }
     }
     private fun checkLinkForVorP(){
-        if (video_url != "") {
+        if (video_url.isNotEmpty()) {
             downloadableurl = video_url
             isVideo = true
             videoView.visibility = View.VISIBLE
@@ -236,18 +252,23 @@ class DownloadFragment : Fragment(), SendDataInterface{
     }
 
     private fun share(context: Context, link: String) {
+        var extension = ".mp4"
+        if (!isVideo)
+            extension = ".jpg"
         val URI: Uri = FileProvider.getUriForFile(
             context,
-            context.applicationContext.packageName + ".provider",File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),"Instagram Downloader/$filename.mp4"))
+            context.applicationContext.packageName + ".provider",File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),"Instagram Downloader/$filename$extension"))
         Log.e("file",
-            File(Environment.DIRECTORY_DOWNLOADS,"Instagram Downloader/$filename.mp4").toString())
+            File(Environment.DIRECTORY_DOWNLOADS,"Instagram Downloader/$filename$extension").toString())
 
         val shareIntent = Intent()
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         shareIntent.action = Intent.ACTION_SEND
         shareIntent.putExtra(Intent.EXTRA_STREAM, URI)
-        shareIntent.type = "video/*"
-        context.startActivity(Intent.createChooser(shareIntent, "Share Video to.."))
+
+        shareIntent.type = "*/*"
+        activity?.startActivity(Intent.createChooser(shareIntent, "Share Video to.."))
     }
 
 
@@ -256,9 +277,12 @@ class DownloadFragment : Fragment(), SendDataInterface{
         if (url != null) {
             Log.e("url",url)
         }
-        var extension = ".mp4"
+        var extension =""
         if (!isVideo)
             extension = ".jpg"
+        else
+            extension = ".mp4"
+
 
         //String name = filename.replaceAll("[^a-zA-Z0-9]", "");
         filename = (System.currentTimeMillis() / 1000).toString()
