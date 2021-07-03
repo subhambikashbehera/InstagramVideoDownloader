@@ -2,7 +2,6 @@ package com.subhambikashsubhamgupta.instagramdownloader
 
 import android.app.DownloadManager
 import android.content.*
-import android.content.Intent.getIntent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -18,7 +17,6 @@ import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -86,23 +84,23 @@ class DownloadFragment : Fragment(), SendDataInterface{
             Toast.makeText(activity, "Invalid Link", Toast.LENGTH_LONG).show()
         }
 
-
-        eturl?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                if (s?.contains("www.instagram") == true){
-                    hidekeyboard()
-                    progress?.visibility = View.VISIBLE
-                    eturl?.error = null
-                    getDownloadableUrl(eturl?.text.toString())
-                }
-
-            }
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-        })
+//
+//        eturl?.addTextChangedListener(object : TextWatcher {
+//            override fun afterTextChanged(s: Editable?) {
+//                if (s?.contains("www.instagram") == true){
+//                    hidekeyboard()
+//                    progress?.visibility = View.VISIBLE
+//                    eturl?.error = null
+//                    getDownloadableUrl(eturl?.text.toString())
+//                }
+//
+//            }
+//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+//            }
+//
+//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//            }
+//        })
 
         try {
             val extras = activity?.intent?.extras
