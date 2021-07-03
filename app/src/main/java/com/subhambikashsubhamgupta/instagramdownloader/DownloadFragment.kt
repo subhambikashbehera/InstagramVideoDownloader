@@ -2,18 +2,20 @@ package com.subhambikashsubhamgupta.instagramdownloader
 
 import android.app.DownloadManager
 import android.content.*
+import android.content.ClipData
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -28,13 +30,14 @@ import org.json.JSONObject
 import java.io.File
 
 
-class DownloadFragment : Fragment(), SendDataInterface{
+class DownloadFragment : Fragment(){
 
     private var download: Button? = null
     private var share: Button? = null
     private var fromclip: Button? = null
     private var progress: ProgressBar? = null
     private var imgvidcard: MaterialCardView? = null
+    private var bottomlayout: LinearLayout? = null
     private var eturl: EditText? = null
     lateinit var imageview:ImageView
     lateinit var mediaController: MediaController
@@ -44,6 +47,8 @@ class DownloadFragment : Fragment(), SendDataInterface{
     var filename = ""
     var video_url = ""
     var pic_url = ""
+    var url = ""
+    var clipboard :ClipboardManager? = null
     var isVideo = false
     var id:Long=0
     override fun onCreateView(
@@ -66,12 +71,13 @@ class DownloadFragment : Fragment(), SendDataInterface{
         progress=view.findViewById(R.id.progress)
         fromclip=view.findViewById(R.id.pastefromclip)
         imgvidcard=view.findViewById(R.id.m2card)
+        bottomlayout=view.findViewById(R.id.bottomlayout)
 
         progress?.isIndeterminate = true
         share?.isEnabled = false
 
-        val clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val url : String? = clipboard.text as String?
+        clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        url = clipboard?.text as String
         if (url?.contains("www.instagram") == true){
             eturl?.setText(url)
             hidekeyboard()
@@ -81,26 +87,11 @@ class DownloadFragment : Fragment(), SendDataInterface{
         }
         else{
             progress?.visibility = View.GONE
-            Toast.makeText(activity, "Invalid Link", Toast.LENGTH_LONG).show()
+//            if (eturl?.text?.isEmpty() == true)
+//                Toast.makeText(activity, "Invalid Link", Toast.LENGTH_LONG).show()
         }
 
-//
-//        eturl?.addTextChangedListener(object : TextWatcher {
-//            override fun afterTextChanged(s: Editable?) {
-//                if (s?.contains("www.instagram") == true){
-//                    hidekeyboard()
-//                    progress?.visibility = View.VISIBLE
-//                    eturl?.error = null
-//                    getDownloadableUrl(eturl?.text.toString())
-//                }
-//
-//            }
-//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-//            }
-//
-//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//            }
-//        })
+
 
         try {
             val extras = activity?.intent?.extras
@@ -143,7 +134,15 @@ class DownloadFragment : Fragment(), SendDataInterface{
         }
         fromclip?.setOnClickListener {
             val clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            eturl?.setText(clipboard.text as String?)
+            var str = clipboard.text as String?
+            if (str?.contains("www.instagram") == true){
+                eturl?.setText(str)
+                progress?.visibility = View.VISIBLE
+                getDownloadableUrl(str)
+            }
+
+
+
         }
 
 
@@ -159,6 +158,13 @@ class DownloadFragment : Fragment(), SendDataInterface{
                     share?.isEnabled = true
                     eturl?.setText(null)
                     progress?.visibility = View.GONE
+                    video_url = ""
+                    pic_url = ""
+                    url = ""
+                    val clipData = ClipData.newPlainText("", "")
+                    clipboard?.setPrimaryClip(clipData)
+                    downloadableurl = ""
+                    showDialog()
                     share?.setOnClickListener {
                         activity?.applicationContext?.let { it1 -> share(it1,"" ) }
                     }
@@ -173,13 +179,35 @@ class DownloadFragment : Fragment(), SendDataInterface{
 
 
     }
-    override fun fromclipBoard(string: String) {
-        eturl?.setText(string)
+
+    override fun onResume() {
+        super.onResume()
+        clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        url = clipboard?.text as String
+        if (url?.contains("www.instagram") == true){
+            eturl?.setText(url)
+            hidekeyboard()
+            progress?.visibility = View.VISIBLE
+            eturl?.error = null
+            getDownloadableUrl(eturl?.text.toString())
+        }
+        else{
+            progress?.visibility = View.GONE
+        }
     }
-    fun pasteFromClip(string: String){
-        eturl?.setText(string)
-        Log.e("clipd",string)
+
+    override fun onPause() {
+        super.onPause()
+        val clipData = ClipData.newPlainText("", "")
+        clipboard?.setPrimaryClip(clipData)
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        val clipData = ClipData.newPlainText("", "")
+        clipboard?.setPrimaryClip(clipData)
+    }
+
 
     fun getDownloadableUrl(url: String?){
         val uri: Uri
@@ -201,6 +229,7 @@ class DownloadFragment : Fragment(), SendDataInterface{
                         val json = JSONObject(jsonresponse)
                         val ur0 = json.getJSONObject("graphql").getJSONObject("shortcode_media")
                             .getJSONArray("display_resources")
+                        bottomlayout?.visibility = View.VISIBLE
                         val jsonobject2 = ur0.getJSONObject(2)
                         pic_url = jsonobject2.getString("src")
                         Log.d("pic", pic_url);
@@ -224,29 +253,6 @@ class DownloadFragment : Fragment(), SendDataInterface{
 
                    checkLinkForVorP()
 
-                    if (video_url != "") {
-                        download?.visibility=View.VISIBLE
-                        videoView.visibility = View.VISIBLE
-                        imageview.visibility = View.GONE
-                        videoView.setVideoURI(Uri.parse(video_url))
-                        mediaController = MediaController(context)
-                        mediaController.setAnchorView(videoView)
-                        videoView.setMediaController(mediaController)
-                        videoView.setOnPreparedListener {
-                            progress?.visibility = View.GONE
-                            it.isLooping = false
-                            it.start()
-                        }
-                    } else {
-                        videoView.visibility = View.GONE
-                        imageview.visibility = View.VISIBLE
-                        Glide
-                            .with(this)
-                            .load(pic_url)
-                            .centerCrop()
-                            .placeholder(R.drawable.ic_launcher_background)
-                            .into(imageview);
-                    }
 
                 },
                     Response.ErrorListener { error ->
@@ -272,7 +278,25 @@ class DownloadFragment : Fragment(), SendDataInterface{
         }
     }
     private fun showDialog(){
-        val materialAlertDialogBuilder = MaterialAlertDialogBuilder(activity?.applicationContext!!)
+        val popup = MaterialAlertDialogBuilder(requireContext())
+        var dialog: AlertDialog? = null
+        val view = activity?.layoutInflater?.inflate( R.layout.popup,null)
+        val title : TextView? = view?.findViewById(R.id.title)
+        val message : TextView? = view?.findViewById(R.id.message)
+        val sharebtn : TextView? = view?.findViewById(R.id.sharebtn)
+        val cancelbtn : TextView? = view?.findViewById(R.id.closebtn)
+        title?.setText("Download Complete!...")
+        message?.setText("Now you can share by clicking on share button")
+        sharebtn?.setOnClickListener{
+            activity?.applicationContext?.let { it1 -> share(it1,"" ) }
+        }
+        cancelbtn?.setOnClickListener {
+            dialog?.dismiss()
+        }
+        popup?.setBackground(ColorDrawable(Color.TRANSPARENT))
+        popup?.setView(view).create()
+
+        dialog = popup?.show()
     }
     private fun checkLinkForVorP(){
         if (video_url.isNotEmpty()) {
@@ -314,6 +338,7 @@ class DownloadFragment : Fragment(), SendDataInterface{
             File(Environment.DIRECTORY_DOWNLOADS,"Instagram Downloader/$filename$extension").toString())
 
         val shareIntent = Intent()
+
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         shareIntent.action = Intent.ACTION_SEND
