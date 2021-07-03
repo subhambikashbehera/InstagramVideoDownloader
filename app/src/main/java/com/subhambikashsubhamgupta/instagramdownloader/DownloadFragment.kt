@@ -102,26 +102,26 @@ class DownloadFragment : Fragment(), SendDataInterface{
             }
         })
 
-//        try {
-//            val extras = activity?.intent?.extras
-//            val value1 = extras!!.getString(Intent.EXTRA_TEXT)
-//            if (value1 != null)
-//            {
-//                eturl?.setText(value1)
-//                hidekeyboard()
-//                checkpermission()
-//                if(eturl?.text.toString().isNotEmpty()){
-//                    progress?.visibility = View.VISIBLE
-//                    eturl?.error = null
-//                    getDownloadableUrl(eturl?.text.toString())
-//                } else
-//                    Toast.makeText(activity, "Enter Link Then Click Generate", Toast.LENGTH_LONG).show()
-//            }
-//
-//        }catch (E:Exception)
-//        {
-//            E.printStackTrace()
-//        }
+        try {
+            val extras = activity?.intent?.extras
+            val value1 = extras!!.getString(Intent.EXTRA_TEXT)
+            if (value1 != null)
+            {
+                eturl?.setText(value1)
+                hidekeyboard()
+                checkpermission()
+                if(eturl?.text.toString().isNotEmpty()){
+                    progress?.visibility = View.VISIBLE
+                    eturl?.error = null
+                    getDownloadableUrl(eturl?.text.toString())
+                } else
+                    Toast.makeText(activity, "Enter Link Then Click Generate", Toast.LENGTH_LONG).show()
+            }
+
+        }catch (E:Exception)
+        {
+            E.printStackTrace()
+        }
 
 
 
@@ -226,29 +226,6 @@ class DownloadFragment : Fragment(), SendDataInterface{
 
                    checkLinkForVorP()
 
-//                    if (video_url != "") {
-//                        download?.visibility=View.VISIBLE
-//                        videoView.visibility = View.VISIBLE
-//                        imageview.visibility = View.GONE
-//                        videoView.setVideoURI(Uri.parse(video_url))
-//                        mediaController = MediaController(context)
-//                        mediaController.setAnchorView(videoView)
-//                        videoView.setMediaController(mediaController)
-//                        videoView.setOnPreparedListener {
-//                            progress?.visibility = View.GONE
-//                            it.isLooping = false
-//                            it.start()
-//                        }
-//                    } else {
-//                        videoView.visibility = View.GONE
-//                        imageview.visibility = View.VISIBLE
-//                        Glide
-//                            .with(this)
-//                            .load(pic_url)
-//                            .centerCrop()
-//                            .placeholder(R.drawable.ic_launcher_background)
-//                            .into(imageview);
-//                    }
 
                 },
                     Response.ErrorListener { error ->
@@ -370,6 +347,8 @@ class DownloadFragment : Fragment(), SendDataInterface{
 
         }
     }
+
+
 
 
 

@@ -63,6 +63,8 @@ class MainActivity : AppCompatActivity() {
             val path = uri.pathSegments
             println(path)
         }
+
+        
         checkpermisson()
 
     }
