@@ -2,6 +2,7 @@ package com.subhambikashsubhamgupta.instagramdownloader
 
 import android.app.DownloadManager
 import android.content.*
+import android.content.Intent.getIntent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -32,7 +33,6 @@ class DownloadFragment : Fragment() {
     private var fromclip: Button? = null
     private var progress: ProgressBar? = null
     private var imgvidcard: MaterialCardView? = null
-
     private var eturl: EditText? = null
     lateinit var imageview:ImageView
     lateinit var mediaController: MediaController
@@ -43,7 +43,7 @@ class DownloadFragment : Fragment() {
     var id:Long=0
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         val view = inflater.inflate(R.layout.fragment_download, container, false)
         return view
@@ -65,11 +65,26 @@ class DownloadFragment : Fragment() {
         progress?.isIndeterminate = true
         share?.isEnabled = false
 
+        try {
+            val extras = activity?.intent?.extras
+            val value1 = extras!!.getString(Intent.EXTRA_TEXT)
+            if (value1 != null)
+            {
+                eturl?.setText(value1)
+                hidekeyboard()
+                checkpermission()
+                if(eturl?.text.toString().isNotEmpty()){
+                    progress?.visibility = View.VISIBLE
+                    eturl?.error = null
+                    getDownloadableUrl(eturl?.text.toString())
+                } else
+                    Toast.makeText(activity, "Enter Link Then Click Generate", Toast.LENGTH_LONG).show()
+            }
 
-
-
-
-
+        }catch (E:Exception)
+        {
+            E.printStackTrace()
+        }
 
 
 
@@ -163,6 +178,7 @@ class DownloadFragment : Fragment() {
                         e.printStackTrace()
                     }
                     if (video_url != "") {
+                        download?.visibility=View.VISIBLE
                         videoView.visibility = View.VISIBLE
                         imageview.visibility = View.GONE
                         videoView.setVideoURI(Uri.parse(video_url))

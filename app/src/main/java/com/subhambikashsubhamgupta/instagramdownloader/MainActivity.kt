@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -100,7 +99,7 @@ class MainActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
-        grantResults: IntArray
+        grantResults: IntArray,
     ) {
         if (requestCode==103 && grantResults[0] != PackageManager.PERMISSION_GRANTED)
         {
