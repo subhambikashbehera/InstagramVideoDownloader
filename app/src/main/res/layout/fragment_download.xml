@@ -97,7 +97,11 @@
        <LinearLayout
            android:layout_width="match_parent"
            android:layout_height="match_parent"
+<<<<<<< HEAD
             android:layout_marginBottom="8dp"
+=======
+            android:id="@+id/bottomlayout"
+>>>>>>> dev-behera
            android:gravity="center">
 
            <Button
@@ -105,16 +109,17 @@
                style="@style/Widget.MaterialComponents.Button.TextButton"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               app:strokeWidth="1dp"
-               android:layout_marginEnd="8dp"
                android:layout_marginStart="8dp"
+               android:layout_marginEnd="8dp"
+               android:text="share"
+               android:textColor="@color/purple_200"
+               android:visibility="gone"
+               app:icon="@drawable/ic_share"
                app:iconGravity="textStart"
                app:iconPadding="4dp"
-
                app:strokeColor="@color/purple_200"
-               android:text="share"
-
-               app:icon="@drawable/ic_share" />
+               app:strokeWidth="1dp"
+               tools:visibility="visible" />
 
            <Button
                android:id="@+id/download"
@@ -122,14 +127,16 @@
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                android:layout_marginEnd="8dp"
+               android:text="Download"
+               android:visibility="gone"
+
+               app:icon="@drawable/ic_download"
                app:iconGravity="textStart"
                app:iconPadding="4dp"
 
-               app:strokeWidth="1dp"
                app:strokeColor="@color/purple_200"
-               android:text="Download"
-
-               app:icon="@drawable/ic_download" />
+               app:strokeWidth="1dp"
+               tools:visibility="visible" />
        </LinearLayout>
    </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
@@ -137,7 +144,6 @@
             android:layout_width="wrap_content"
             app:cardCornerRadius="12dp"
             android:id="@+id/m2card"
-
             android:layout_marginStart="12dp"
             android:layout_marginEnd="12dp"
             app:cardElevation="50dp"

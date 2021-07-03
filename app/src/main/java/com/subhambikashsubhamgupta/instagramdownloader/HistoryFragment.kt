@@ -114,10 +114,12 @@ class HistoryFragment : Fragment() {
                 var bMap = mMMR.frameAtTime
                 listvideos.add(HistoryModel(uriss,bMap!!,file))
             }
+
+
             withContext(Dispatchers.Main){
                 historyAdapter= activity?.let { HistoryAdapter(listvideos, it) }!!
                 recyclerView.adapter=historyAdapter
-                var layout=GridLayoutManager(context,3)
+                val layout=GridLayoutManager(context,3)
                 recyclerView.layoutManager=layout
                 historyAdapter.notifyDataSetChanged()
                 swipeContainer.setRefreshing(false)

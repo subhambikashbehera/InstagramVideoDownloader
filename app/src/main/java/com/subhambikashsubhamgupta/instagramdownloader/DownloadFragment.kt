@@ -2,6 +2,7 @@ package com.subhambikashsubhamgupta.instagramdownloader
 
 import android.app.DownloadManager
 import android.content.*
+import android.content.Intent.getIntent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -36,7 +37,6 @@ class DownloadFragment : Fragment(), SendDataInterface{
     private var fromclip: Button? = null
     private var progress: ProgressBar? = null
     private var imgvidcard: MaterialCardView? = null
-
     private var eturl: EditText? = null
     lateinit var imageview:ImageView
     lateinit var mediaController: MediaController
@@ -50,7 +50,7 @@ class DownloadFragment : Fragment(), SendDataInterface{
     var id:Long=0
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         val view = inflater.inflate(R.layout.fragment_download, container, false)
         return view
@@ -103,6 +103,30 @@ class DownloadFragment : Fragment(), SendDataInterface{
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
         })
+
+        try {
+            val extras = activity?.intent?.extras
+            val value1 = extras!!.getString(Intent.EXTRA_TEXT)
+            if (value1 != null)
+            {
+                eturl?.setText(value1)
+                hidekeyboard()
+                checkpermission()
+                if(eturl?.text.toString().isNotEmpty()){
+                    progress?.visibility = View.VISIBLE
+                    eturl?.error = null
+                    getDownloadableUrl(eturl?.text.toString())
+                } else
+                    Toast.makeText(activity, "Enter Link Then Click Generate", Toast.LENGTH_LONG).show()
+            }
+
+        }catch (E:Exception)
+        {
+            E.printStackTrace()
+        }
+
+
+
         generate.setOnClickListener {
             hidekeyboard()
             checkpermission()
@@ -199,7 +223,33 @@ class DownloadFragment : Fragment(), SendDataInterface{
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
+
                    checkLinkForVorP()
+
+                    if (video_url != "") {
+                        download?.visibility=View.VISIBLE
+                        videoView.visibility = View.VISIBLE
+                        imageview.visibility = View.GONE
+                        videoView.setVideoURI(Uri.parse(video_url))
+                        mediaController = MediaController(context)
+                        mediaController.setAnchorView(videoView)
+                        videoView.setMediaController(mediaController)
+                        videoView.setOnPreparedListener {
+                            progress?.visibility = View.GONE
+                            it.isLooping = false
+                            it.start()
+                        }
+                    } else {
+                        videoView.visibility = View.GONE
+                        imageview.visibility = View.VISIBLE
+                        Glide
+                            .with(this)
+                            .load(pic_url)
+                            .centerCrop()
+                            .placeholder(R.drawable.ic_launcher_background)
+                            .into(imageview);
+                    }
+
                 },
                     Response.ErrorListener { error ->
                         Log.e("Error", error.message.toString())

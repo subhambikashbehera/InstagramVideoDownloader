@@ -16,6 +16,7 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
+
             android:layout_height="wrap_content"
             />
 
@@ -27,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tabTextColor="@color/white"
-        app:tabIndicatorColor="@color/white"
+        app:tabIndicatorColor="@color/purple_500"
         app:tabGravity="fill"
         android:background="@drawable/fst_gradient"
         app:tabInlineLabel="true"

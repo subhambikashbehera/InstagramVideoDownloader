@@ -42,6 +42,7 @@ class HistoryAdapter: RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>{
         }
 
         holder.share.setOnClickListener {
+
             context.grantUriPermission(
                 "com.subhambikashsubhamgupta.instagramdownloader",
                 list.url,
@@ -60,6 +61,7 @@ class HistoryAdapter: RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>{
             shareIntent.putExtra(Intent.EXTRA_STREAM, URI)
             shareIntent.type = "video/*"
             context.startActivity(Intent.createChooser(shareIntent, "Share Video to.."))
+
         }
 
 

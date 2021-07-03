@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
-        grantResults: IntArray
+        grantResults: IntArray,
     ) {
         if (requestCode==103 && grantResults[0] != PackageManager.PERMISSION_GRANTED)
         {
