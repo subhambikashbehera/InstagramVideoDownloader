@@ -1,12 +1,13 @@
 package com.subhambikashsubhamgupta.instagramdownloader
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -19,6 +20,8 @@ import com.google.android.material.tabs.TabLayoutMediator
 class MainActivity : AppCompatActivity() {
 
     var is_permission=false
+    lateinit var downloadFragment: DownloadFragment
+
     lateinit var viewPager: ViewPager2
     lateinit var tablayout: TabLayout
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +34,7 @@ class MainActivity : AppCompatActivity() {
         viewPager = findViewById(R.id.viewpager1)
         tablayout = findViewById(R.id.tablayout)
         viewPager.adapter = PageAdapters(supportFragmentManager, lifecycle)
+        downloadFragment = DownloadFragment()
 
         TabLayoutMediator(tablayout, viewPager) { tab, position ->
             when (position) {
@@ -39,17 +43,29 @@ class MainActivity : AppCompatActivity() {
             }
 
         }.attach()
+        val clipBoardManager = applicationContext.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        clipBoardManager.addPrimaryClipChangedListener {
+            val copiedString = clipBoardManager.primaryClip?.getItemAt(0)?.text?.toString()
+            Log.e("clip","hi"+copiedString)
+            if (copiedString != null) {
+
+                downloadFragment.pasteFromClip(copiedString)
+
+            }
+        }
+
         val uri = intent.data
         Log.e("uri", uri.toString())
         if (uri != null) {
             val path = uri.pathSegments
             println(path)
         }
-    checkpermisson()
+        checkpermisson()
+
+    }
 
 
 
-}
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -112,5 +128,7 @@ class MainActivity : AppCompatActivity() {
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
+
+
 
 }

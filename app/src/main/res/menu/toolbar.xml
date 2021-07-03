@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+
+
+
 
     <item android:title="Share App"
         android:id="@+id/shareapp"
@@ -7,4 +11,5 @@
     <item android:title="Privacy Policies"
         android:id="@+id/privecypolicies"
         />
+
 </menu>

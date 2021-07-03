@@ -25,7 +25,7 @@ import org.json.JSONObject
 import java.io.File
 
 
-class DownloadFragment : Fragment() {
+class DownloadFragment : Fragment(), SendDataInterface{
 
     private var download: Button? = null
     private var share: Button? = null
@@ -40,6 +40,9 @@ class DownloadFragment : Fragment() {
     lateinit var generate:Button
     var downloadableurl=""
     var filename = ""
+    var video_url = ""
+    var pic_url = ""
+    var isVideo = false
     var id:Long=0
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,6 +74,17 @@ class DownloadFragment : Fragment() {
 
 
 
+        val clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val url : String? = clipboard.text as String?
+        if (url?.contains("www.instagram") == true){
+            eturl?.setText(url)
+            hidekeyboard()
+            progress?.visibility = View.VISIBLE
+            eturl?.error = null
+            getDownloadableUrl(eturl?.text.toString())
+        }
+        else
+            Toast.makeText(activity, "Invalid Link", Toast.LENGTH_LONG).show()
 
 
         generate.setOnClickListener {
@@ -85,7 +99,8 @@ class DownloadFragment : Fragment() {
             }
 
         download?.setOnClickListener {
-            videoView.start()
+            //videoView.start()
+            progress?.visibility = View.VISIBLE
             activity?.applicationContext?.let { downloadFile(it,downloadableurl) }
         }
         fromclip?.setOnClickListener {
@@ -104,6 +119,8 @@ class DownloadFragment : Fragment() {
                 {
                     Toast.makeText(activity,"download complete",Toast.LENGTH_SHORT).show()
                     share?.isEnabled = true
+                    eturl?.setText(null)
+                    progress?.visibility = View.GONE
                     share?.setOnClickListener {
                         activity?.applicationContext?.let { it1 -> share(it1,"" ) }
                     }
@@ -118,9 +135,14 @@ class DownloadFragment : Fragment() {
 
 
     }
-    fun pasteFromShared(){
-
+    override fun fromclipBoard(string: String) {
+        eturl?.setText(string)
     }
+    fun pasteFromClip(string: String){
+        eturl?.setText(string)
+        Log.e("clipd",string)
+    }
+
     fun getDownloadableUrl(url: String?){
         val uri: Uri
         uri = Uri.parse(url)
@@ -135,8 +157,7 @@ class DownloadFragment : Fragment() {
                 object : StringRequest(Method.GET, urlfinal, Response.Listener<String>
                 { response ->
                     var jsonresponse: String = response.toString()
-                    var video_url = ""
-                    var pic_url = ""
+
                     try {
                         Log.d("jsonresponse", "getDownloadableUrl: $jsonresponse")
                         val json = JSONObject(jsonresponse)
@@ -156,34 +177,13 @@ class DownloadFragment : Fragment() {
                         val json = JSONObject(jsonresponse)
                         video_url = json.getJSONObject("graphql").getJSONObject("shortcode_media")
                             .getString("video_url")
-                        downloadableurl = video_url
+                        //downloadableurl = video_url
 
                         Log.e("vid_url", video_url);
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-                    if (video_url != "") {
-                        videoView.visibility = View.VISIBLE
-                        imageview.visibility = View.GONE
-                        videoView.setVideoURI(Uri.parse(video_url))
-                        mediaController = MediaController(context)
-                        mediaController.setAnchorView(videoView)
-                        videoView.setMediaController(mediaController)
-                        videoView.setOnPreparedListener {
-                            progress?.visibility = View.GONE
-                            it.isLooping = false
-                            it.start()
-                        }
-                    } else {
-                        videoView.visibility = View.GONE
-                        imageview.visibility = View.VISIBLE
-                        Glide
-                            .with(this)
-                            .load(pic_url)
-                            .centerCrop()
-                            .placeholder(R.drawable.ic_launcher_background)
-                            .into(imageview);
-                    }
+                   checkLinkForVorP()
                 },
                     Response.ErrorListener { error ->
                         Log.e("Error", error.message.toString())
@@ -206,6 +206,35 @@ class DownloadFragment : Fragment() {
 
         }
     }
+    private fun checkLinkForVorP(){
+        if (video_url != "") {
+            downloadableurl = video_url
+            isVideo = true
+            videoView.visibility = View.VISIBLE
+            imageview.visibility = View.GONE
+            videoView.setVideoURI(Uri.parse(video_url))
+            mediaController = MediaController(context)
+            mediaController.setAnchorView(videoView)
+            videoView.setMediaController(mediaController)
+            videoView.setOnPreparedListener {
+                progress?.visibility = View.GONE
+                it.isLooping = false
+                it.start()
+            }
+        } else {
+            isVideo = false
+            downloadableurl = pic_url
+            videoView.visibility = View.GONE
+            imageview.visibility = View.VISIBLE
+            Glide
+                .with(this)
+                .load(pic_url)
+                .centerCrop()
+                .placeholder(R.drawable.ic_launcher_background)
+                .into(imageview);
+        }
+    }
+
     private fun share(context: Context, link: String) {
         val URI: Uri = FileProvider.getUriForFile(
             context,
@@ -227,6 +256,10 @@ class DownloadFragment : Fragment() {
         if (url != null) {
             Log.e("url",url)
         }
+        var extension = ".mp4"
+        if (!isVideo)
+            extension = ".jpg"
+
         //String name = filename.replaceAll("[^a-zA-Z0-9]", "");
         filename = (System.currentTimeMillis() / 1000).toString()
         val request=DownloadManager.Request(Uri.parse(url))
@@ -235,7 +268,8 @@ class DownloadFragment : Fragment() {
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
             .setAllowedOverMetered(true)
             .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
-                "Instagram Downloader/$filename.mp4")
+                "Instagram Downloader/$filename$extension"
+            )
 
         val dm=context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         id=dm.enqueue(request)
