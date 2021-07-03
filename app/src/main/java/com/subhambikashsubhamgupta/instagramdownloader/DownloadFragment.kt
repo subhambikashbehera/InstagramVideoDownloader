@@ -24,6 +24,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.json.JSONObject
 import java.io.File
 
@@ -221,6 +222,9 @@ class DownloadFragment : Fragment(), SendDataInterface{
             progress?.visibility = View.GONE
 
         }
+    }
+    private fun showDialog(){
+        val materialAlertDialogBuilder = MaterialAlertDialogBuilder(activity?.applicationContext!!)
     }
     private fun checkLinkForVorP(){
         if (video_url.isNotEmpty()) {
