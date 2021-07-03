@@ -84,44 +84,44 @@ class DownloadFragment : Fragment(), SendDataInterface{
             Toast.makeText(activity, "Invalid Link", Toast.LENGTH_LONG).show()
         }
 
-//
-//        eturl?.addTextChangedListener(object : TextWatcher {
-//            override fun afterTextChanged(s: Editable?) {
-//                if (s?.contains("www.instagram") == true){
-//                    hidekeyboard()
-//                    progress?.visibility = View.VISIBLE
-//                    eturl?.error = null
-//                    getDownloadableUrl(eturl?.text.toString())
-//                }
-//
-//            }
-//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-//            }
-//
-//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//            }
-//        })
 
-        try {
-            val extras = activity?.intent?.extras
-            val value1 = extras!!.getString(Intent.EXTRA_TEXT)
-            if (value1 != null)
-            {
-                eturl?.setText(value1)
-                hidekeyboard()
-                checkpermission()
-                if(eturl?.text.toString().isNotEmpty()){
+        eturl?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                if (s?.contains("www.instagram") == true){
+                    hidekeyboard()
                     progress?.visibility = View.VISIBLE
                     eturl?.error = null
                     getDownloadableUrl(eturl?.text.toString())
-                } else
-                    Toast.makeText(activity, "Enter Link Then Click Generate", Toast.LENGTH_LONG).show()
+                }
+
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
-        }catch (E:Exception)
-        {
-            E.printStackTrace()
-        }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+        })
+
+//        try {
+//            val extras = activity?.intent?.extras
+//            val value1 = extras!!.getString(Intent.EXTRA_TEXT)
+//            if (value1 != null)
+//            {
+//                eturl?.setText(value1)
+//                hidekeyboard()
+//                checkpermission()
+//                if(eturl?.text.toString().isNotEmpty()){
+//                    progress?.visibility = View.VISIBLE
+//                    eturl?.error = null
+//                    getDownloadableUrl(eturl?.text.toString())
+//                } else
+//                    Toast.makeText(activity, "Enter Link Then Click Generate", Toast.LENGTH_LONG).show()
+//            }
+//
+//        }catch (E:Exception)
+//        {
+//            E.printStackTrace()
+//        }
 
 
 
@@ -176,6 +176,8 @@ class DownloadFragment : Fragment(), SendDataInterface{
     override fun fromclipBoard(string: String) {
         eturl?.setText(string)
     }
+
+
     fun pasteFromClip(string: String){
         eturl?.setText(string)
         Log.e("clipd",string)
@@ -224,35 +226,35 @@ class DownloadFragment : Fragment(), SendDataInterface{
 
                    checkLinkForVorP()
 
-                    if (video_url != "") {
-                        download?.visibility=View.VISIBLE
-                        videoView.visibility = View.VISIBLE
-                        imageview.visibility = View.GONE
-                        videoView.setVideoURI(Uri.parse(video_url))
-                        mediaController = MediaController(context)
-                        mediaController.setAnchorView(videoView)
-                        videoView.setMediaController(mediaController)
-                        videoView.setOnPreparedListener {
-                            progress?.visibility = View.GONE
-                            it.isLooping = false
-                            it.start()
-                        }
-                    } else {
-                        videoView.visibility = View.GONE
-                        imageview.visibility = View.VISIBLE
-                        Glide
-                            .with(this)
-                            .load(pic_url)
-                            .centerCrop()
-                            .placeholder(R.drawable.ic_launcher_background)
-                            .into(imageview);
-                    }
+//                    if (video_url != "") {
+//                        download?.visibility=View.VISIBLE
+//                        videoView.visibility = View.VISIBLE
+//                        imageview.visibility = View.GONE
+//                        videoView.setVideoURI(Uri.parse(video_url))
+//                        mediaController = MediaController(context)
+//                        mediaController.setAnchorView(videoView)
+//                        videoView.setMediaController(mediaController)
+//                        videoView.setOnPreparedListener {
+//                            progress?.visibility = View.GONE
+//                            it.isLooping = false
+//                            it.start()
+//                        }
+//                    } else {
+//                        videoView.visibility = View.GONE
+//                        imageview.visibility = View.VISIBLE
+//                        Glide
+//                            .with(this)
+//                            .load(pic_url)
+//                            .centerCrop()
+//                            .placeholder(R.drawable.ic_launcher_background)
+//                            .into(imageview);
+//                    }
 
                 },
                     Response.ErrorListener { error ->
                         Log.e("Error", error.message.toString())
                         eturl?.setError("Something Went Wrong")
-                        Toast.makeText(activity, "Something Went Rong", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(activity, "Something Went wRong", Toast.LENGTH_SHORT).show()
 
                     }) {
                     override fun getHeaders(): Map<String, String> {
@@ -330,10 +332,10 @@ class DownloadFragment : Fragment(), SendDataInterface{
             Log.e("url",url)
         }
         var extension =""
-        if (!isVideo)
-            extension = ".jpg"
+        extension = if (!isVideo)
+            ".jpg"
         else
-            extension = ".mp4"
+            ".mp4"
 
 
         //String name = filename.replaceAll("[^a-zA-Z0-9]", "");
