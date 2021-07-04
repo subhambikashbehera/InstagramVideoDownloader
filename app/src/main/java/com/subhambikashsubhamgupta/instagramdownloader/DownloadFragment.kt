@@ -318,6 +318,7 @@ class DownloadFragment : Fragment(){
             downloadableurl = pic_url
             videoView.visibility = View.GONE
             imageview.visibility = View.VISIBLE
+            progress?.visibility = View.GONE
 
             Glide
                 .with(this)
