@@ -46,16 +46,8 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        val clipBoardManager = applicationContext.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-        clipBoardManager.addPrimaryClipChangedListener {
-            val copiedString = clipBoardManager.primaryClip?.getItemAt(0)?.text?.toString()
-            Log.e("clip", "hi$copiedString")
-            if (copiedString != null) {
 
-                downloadFragment.pasteFromClip(copiedString)
 
-            }
-        }
 
         val uri = intent.data
         Log.e("uri", uri.toString())
