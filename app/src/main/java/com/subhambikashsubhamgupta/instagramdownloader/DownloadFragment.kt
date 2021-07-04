@@ -76,20 +76,20 @@ class DownloadFragment : Fragment(){
         progress?.isIndeterminate = true
         share?.isEnabled = false
 
-        clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        url = clipboard?.text as String
-        if (url?.contains("www.instagram") == true){
-            eturl?.setText(url)
-            hidekeyboard()
-            progress?.visibility = View.VISIBLE
-            eturl?.error = null
-            getDownloadableUrl(eturl?.text.toString())
-        }
-        else{
-            progress?.visibility = View.GONE
-//            if (eturl?.text?.isEmpty() == true)
-//                Toast.makeText(activity, "Invalid Link", Toast.LENGTH_LONG).show()
-        }
+//        clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+//        url = clipboard?.text as String
+//        if (url?.contains("www.instagram") == true){
+//            eturl?.setText(url)
+//            hidekeyboard()
+//            progress?.visibility = View.VISIBLE
+//            eturl?.error = null
+//            getDownloadableUrl(eturl?.text.toString())
+//        }
+//        else{
+//            progress?.visibility = View.GONE
+////            if (eturl?.text?.isEmpty() == true)
+////                Toast.makeText(activity, "Invalid Link", Toast.LENGTH_LONG).show()
+//        }
 
 
 
@@ -182,30 +182,30 @@ class DownloadFragment : Fragment(){
 
     override fun onResume() {
         super.onResume()
-        clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        url = clipboard?.text as String
-        if (url?.contains("www.instagram") == true){
-            eturl?.setText(url)
-            hidekeyboard()
-            progress?.visibility = View.VISIBLE
-            eturl?.error = null
-            getDownloadableUrl(eturl?.text.toString())
-        }
-        else{
-            progress?.visibility = View.GONE
-        }
+//        clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+//        url = clipboard?.text as String
+//        if (url?.contains("www.instagram") == true){
+//            eturl?.setText(url)
+//            hidekeyboard()
+//            progress?.visibility = View.VISIBLE
+//            eturl?.error = null
+//            getDownloadableUrl(eturl?.text.toString())
+//        }
+//        else{
+//            progress?.visibility = View.GONE
+//        }
     }
 
     override fun onPause() {
         super.onPause()
-        val clipData = ClipData.newPlainText("", "")
-        clipboard?.setPrimaryClip(clipData)
+//        val clipData = ClipData.newPlainText("", "")
+//        clipboard?.setPrimaryClip(clipData)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        val clipData = ClipData.newPlainText("", "")
-        clipboard?.setPrimaryClip(clipData)
+//        val clipData = ClipData.newPlainText("", "")
+//        clipboard?.setPrimaryClip(clipData)
     }
 
 
@@ -264,7 +264,7 @@ class DownloadFragment : Fragment(){
                     override fun getHeaders(): Map<String, String> {
                         val headers = HashMap<String, String>()
 //                headers["Content-Type"] = "application/json"
-                        headers["User-Agent"] = "Chrome/91.0.4472.77 Mobile"
+                        headers["User-Agent"] = "Chrome/91.0.4472.120 Mobile"
                         return headers
                     }
                 }
