@@ -72,7 +72,7 @@ class DownloadFragment : Fragment(){
         fromclip=view.findViewById(R.id.pastefromclip)
         imgvidcard=view.findViewById(R.id.m2card)
         bottomlayout=view.findViewById(R.id.bottomlayout)
-
+        progress?.visibility = View.GONE
         progress?.isIndeterminate = true
         share?.isEnabled = false
 
@@ -318,6 +318,7 @@ class DownloadFragment : Fragment(){
             downloadableurl = pic_url
             videoView.visibility = View.GONE
             imageview.visibility = View.VISIBLE
+            progress?.visibility = View.GONE
 
             Glide
                 .with(this)

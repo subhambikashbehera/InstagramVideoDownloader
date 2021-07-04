@@ -112,12 +112,12 @@
                android:text="share"
                android:textColor="@color/purple_200"
 
+               android:visibility="gone"
                app:icon="@drawable/ic_share"
                app:iconGravity="textStart"
                app:iconPadding="4dp"
                app:strokeColor="@color/purple_200"
-               app:strokeWidth="1dp"
-               tools:visibility="visible" />
+               app:strokeWidth="1dp" />
 
            <Button
                android:id="@+id/download"

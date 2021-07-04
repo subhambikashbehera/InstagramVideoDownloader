@@ -45,9 +45,7 @@ class MainActivity : AppCompatActivity() {
         }.attach()
 
 
-
-
-
+        
 
         val uri = intent.data
         Log.e("uri", uri.toString())
