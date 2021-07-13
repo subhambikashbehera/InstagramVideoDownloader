@@ -94,21 +94,23 @@ class DownloadFragment : Fragment(){
 
 
         try {
-            val extras = activity?.intent?.extras
-            val value1 = extras!!.getString(Intent.EXTRA_TEXT)
-            if (value1 != null)
-            {
-                eturl?.setText(value1)
-                hidekeyboard()
-                checkpermission()
-                if(eturl?.text.toString().isNotEmpty()){
-                    progress?.visibility = View.VISIBLE
-                    eturl?.error = null
-                    getDownloadableUrl(eturl?.text.toString())
-                } else
-                    Toast.makeText(activity, "Enter Link Then Click Generate", Toast.LENGTH_LONG).show()
-            }
 
+            if (activity?.intent?.extras != null)
+            {   val extras = activity?.intent?.extras
+                val value1 = extras!!.getString(Intent.EXTRA_TEXT)
+                if (value1 != null)
+                {
+                    eturl?.setText(value1)
+                    hidekeyboard()
+                    checkpermission()
+                    if(eturl?.text.toString().isNotEmpty()){
+                        progress?.visibility = View.VISIBLE
+                        eturl?.error = null
+                        getDownloadableUrl(eturl?.text.toString())
+                    } else
+                        Toast.makeText(activity, "Enter Link Then Click Generate", Toast.LENGTH_LONG).show()
+                }
+            }
         }catch (E:Exception)
         {
             E.printStackTrace()
@@ -129,19 +131,32 @@ class DownloadFragment : Fragment(){
 
         download?.setOnClickListener {
             //videoView.start()
-            progress?.visibility = View.VISIBLE
-            activity?.applicationContext?.let { downloadFile(it,downloadableurl) }
+
+            if(eturl?.text.toString().isNotEmpty()){
+                progress?.visibility = View.VISIBLE
+                activity?.applicationContext?.let { downloadFile(it,downloadableurl) }
+            } else
+                Toast.makeText(activity, "Enter Link Again For Download", Toast.LENGTH_LONG).show()
+
+
         }
         fromclip?.setOnClickListener {
+
+
             val clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            var str = clipboard.text as String?
-            if (str?.contains("www.instagram") == true){
-                eturl?.setText(str)
-                progress?.visibility = View.VISIBLE
-                getDownloadableUrl(str)
+            val str = clipboard.text as String?
+
+            if (str != null)
+            {
+                if (str?.contains("www.instagram") == true){
+                    eturl?.setText(str)
+                    progress?.visibility = View.VISIBLE
+                    getDownloadableUrl(str)
+                }
+            }else
+            {
+                Toast.makeText(activity, "Copy The link First then click paste link", Toast.LENGTH_LONG).show()
             }
-
-
 
         }
 
