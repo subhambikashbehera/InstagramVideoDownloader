@@ -131,33 +131,40 @@ class DownloadFragment : Fragment(){
 
         download?.setOnClickListener {
             //videoView.start()
+            try {
+                if(eturl?.text.toString().isNotEmpty()){
+                    progress?.visibility = View.VISIBLE
+                    activity?.applicationContext?.let { downloadFile(it,downloadableurl) }
+                } else
+                {
+                    Toast.makeText(activity, "Enter Link Again For Download", Toast.LENGTH_LONG).show()
+                }
 
-            if(eturl?.text.toString().isNotEmpty()){
-                progress?.visibility = View.VISIBLE
-                activity?.applicationContext?.let { downloadFile(it,downloadableurl) }
-            } else
-                Toast.makeText(activity, "Enter Link Again For Download", Toast.LENGTH_LONG).show()
-
-
+            }catch (e:Exception)
+            {
+                e.printStackTrace()
+            }
+            
         }
         fromclip?.setOnClickListener {
-
-
-            val clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val str = clipboard.text as String?
-
-            if (str != null)
+            try {
+                val clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                   val str = clipboard.text as String?
+                   if (str != null)
+                   {
+                       if (str.contains("www.instagram")){
+                           eturl?.setText(str)
+                           progress?.visibility = View.VISIBLE
+                           getDownloadableUrl(str)
+                       }
+                   }else
+                   {
+                       Toast.makeText(activity, "Copy The link First then click paste link", Toast.LENGTH_LONG).show()
+                   }
+            }catch (e:Exception)
             {
-                if (str?.contains("www.instagram") == true){
-                    eturl?.setText(str)
-                    progress?.visibility = View.VISIBLE
-                    getDownloadableUrl(str)
-                }
-            }else
-            {
-                Toast.makeText(activity, "Copy The link First then click paste link", Toast.LENGTH_LONG).show()
+                e.printStackTrace()
             }
-
         }
 
 
