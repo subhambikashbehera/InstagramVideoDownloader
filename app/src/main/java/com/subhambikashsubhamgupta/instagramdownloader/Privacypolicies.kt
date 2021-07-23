@@ -23,7 +23,7 @@ class Privacypolicies : AppCompatActivity() {
 
         webView.settings.javaScriptEnabled = true
         webView.webChromeClient = WebChromeClient()
-        webView.loadUrl("file:///android_asset/privacypolicies.html")
+        webView.loadUrl("file:///android_asset/Privacy Policy.html")
 
 
     }

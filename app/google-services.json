@@ -1,0 +1,127 @@
+{
+  "project_info": {
+    "project_number": "992139088122",
+    "firebase_url": "https://gietu-portal.firebaseio.com",
+    "project_id": "gietu-portal",
+    "storage_bucket": "gietu-portal.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:992139088122:android:d96364f1d21d2cdf333943",
+        "android_client_info": {
+          "package_name": "com.edusy.bustrackingmanagement"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "992139088122-9uepmrj8c9djtomd9p5usi4ldsbpsi68.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD56DG8ZzL1eI395KZn_yg1vxmV6N_QXAc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "992139088122-9uepmrj8c9djtomd9p5usi4ldsbpsi68.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:992139088122:android:5b6c94c6314e577e333943",
+        "android_client_info": {
+          "package_name": "com.example.gietuportalsb"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "992139088122-9uepmrj8c9djtomd9p5usi4ldsbpsi68.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD56DG8ZzL1eI395KZn_yg1vxmV6N_QXAc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "992139088122-9uepmrj8c9djtomd9p5usi4ldsbpsi68.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:992139088122:android:af8c90e319a02809333943",
+        "android_client_info": {
+          "package_name": "com.gietuportalofficial.gietuofficial"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "992139088122-9uepmrj8c9djtomd9p5usi4ldsbpsi68.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD56DG8ZzL1eI395KZn_yg1vxmV6N_QXAc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "992139088122-9uepmrj8c9djtomd9p5usi4ldsbpsi68.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:992139088122:android:7f0a11e58bf0ec0e333943",
+        "android_client_info": {
+          "package_name": "com.subhambikashsubhamgupta.instagramdownloader"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "992139088122-9uepmrj8c9djtomd9p5usi4ldsbpsi68.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD56DG8ZzL1eI395KZn_yg1vxmV6N_QXAc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "992139088122-9uepmrj8c9djtomd9p5usi4ldsbpsi68.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

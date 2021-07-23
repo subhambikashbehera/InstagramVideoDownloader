@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardElevation="12dp"
+    android:forceDarkAllowed="false"
+    app:cardCornerRadius="12dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/rel"
+        android:layout_height="wrap_content">
+
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+           android:layout_alignParentTop="true"
+            android:textSize="20sp"
+            android:layout_marginTop="12dp"
+            android:layout_marginStart="16dp"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:layout_centerVertical="true"
+            android:textStyle="bold" />
+        <Button
+            android:id="@+id/closebtn"
+            android:layout_width="wrap_content"
+          android:layout_alignParentEnd="true"
+            android:layout_height="wrap_content"
+
+            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+            app:icon="@drawable/ic_baseline_clear"
+            android:layout_margin="8dp"
+           />
+        <TextView
+            android:id="@+id/message"
+            android:layout_below="@id/closebtn"
+            android:textStyle="bold"
+           android:textSize="18sp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="Message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:layout_below="@id/message"
+            android:layout_width="match_parent"
+            android:gravity="end"
+            android:padding="6dp"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/sharebtn"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:text="Share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>

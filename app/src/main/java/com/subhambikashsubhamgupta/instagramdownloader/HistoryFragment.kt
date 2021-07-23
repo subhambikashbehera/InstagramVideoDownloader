@@ -5,10 +5,12 @@ import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -25,6 +27,7 @@ import java.lang.Exception
 
 
 class HistoryFragment : Fragment() {
+    private lateinit var messagetextview:TextView
     private lateinit var progressBar: ProgressBar
     lateinit var swipeContainer: SwipeRefreshLayout
     private var listvideos= arrayListOf<HistoryModel>()
@@ -43,7 +46,7 @@ class HistoryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         recyclerView=view.findViewById(R.id.recycle)
         progressBar=view.findViewById(R.id.progressBarcircle)
-
+        messagetextview=view.findViewById(R.id.messagetextview)
         if (activity?.let { ContextCompat.checkSelfPermission(it,android.Manifest.permission.READ_EXTERNAL_STORAGE) } != PackageManager.PERMISSION_GRANTED)
         {
             activity?.let { ActivityCompat.requestPermissions(it, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),102) }
@@ -67,6 +70,7 @@ class HistoryFragment : Fragment() {
         swipeContainer = view.findViewById(R.id.swipeContainer)
         swipeContainer.setOnRefreshListener {
             try {
+                historyAdapter= activity?.let { HistoryAdapter(listvideos, it) }!!
                 historyAdapter.clear()
                 historyAdapter.addAll(listvideos)
                 CoroutineScope(Dispatchers.IO).launch {loadvideo() }
@@ -98,34 +102,56 @@ class HistoryFragment : Fragment() {
         // var rs=context?.contentResolver?.query(uri,cols,null,null,null)
 
         val rs = context?.contentResolver?.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-            cols, selection, selectionArgs, MediaStore.Video.Media._ID + " DESC");
+            cols, selection, selectionArgs, MediaStore.Video.Media._ID + " DESC")
 
 
         if (rs!=null)
         {
-            while (rs.moveToNext())
+            Log.d("rsno", "loadvideo: ${rs.count}")
+            if (rs.count > 0)
             {
-                val url = rs.getString(rs.getColumnIndex(MediaStore.Video.Media.DATA))
-                val urlthumb = rs.getString(rs.getColumnIndex(MediaStore.Video.Thumbnails.DATA))
-                val uriss= Uri.fromFile(File(url))
-                val file=File(url)
-                val mMMR = MediaMetadataRetriever()
-                mMMR.setDataSource(context, uriss)
-                var bMap = mMMR.frameAtTime
-                listvideos.add(HistoryModel(uriss,bMap!!,file))
+                while (rs.moveToNext())
+                {
+                    val url = rs.getString(rs.getColumnIndex(MediaStore.Video.Media.DATA))
+                    val urlthumb = rs.getString(rs.getColumnIndex(MediaStore.Video.Thumbnails.DATA))
+                    val uriss= Uri.fromFile(File(url))
+                    val file=File(url)
+                    val mMMR = MediaMetadataRetriever()
+                    mMMR.setDataSource(context, uriss)
+                    var bMap = mMMR.frameAtTime
+                    listvideos.add(HistoryModel(uriss,bMap!!,file))
+                }
+
+
+                withContext(Dispatchers.Main){
+                    historyAdapter= activity?.let { HistoryAdapter(listvideos, it) }!!
+                    recyclerView.adapter=historyAdapter
+                    val layout=GridLayoutManager(context,3)
+                    recyclerView.layoutManager=layout
+                    historyAdapter.notifyDataSetChanged()
+                    swipeContainer.setRefreshing(false)
+                    progressBar.visibility=View.GONE
+                    messagetextview.visibility=View.GONE
+                }
+            }else
+            {
+                withContext(Dispatchers.Main)
+                {
+                    messagetextview.visibility=View.VISIBLE
+                    progressBar.visibility=View.GONE
+                    swipeContainer.setRefreshing(false)
+                }
+
             }
 
-
-            withContext(Dispatchers.Main){
-                historyAdapter= activity?.let { HistoryAdapter(listvideos, it) }!!
-                recyclerView.adapter=historyAdapter
-                val layout=GridLayoutManager(context,3)
-                recyclerView.layoutManager=layout
-                historyAdapter.notifyDataSetChanged()
+        }else
+        {
+            withContext(Dispatchers.Main)
+            {
                 swipeContainer.setRefreshing(false)
+                messagetextview.visibility=View.VISIBLE
                 progressBar.visibility=View.GONE
             }
-
         }
 
     }

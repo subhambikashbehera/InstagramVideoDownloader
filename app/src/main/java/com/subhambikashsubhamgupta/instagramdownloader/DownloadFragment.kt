@@ -72,43 +72,45 @@ class DownloadFragment : Fragment(){
         fromclip=view.findViewById(R.id.pastefromclip)
         imgvidcard=view.findViewById(R.id.m2card)
         bottomlayout=view.findViewById(R.id.bottomlayout)
-
+        progress?.visibility = View.GONE
         progress?.isIndeterminate = true
         share?.isEnabled = false
 
-        clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        url = clipboard?.text as String
-        if (url?.contains("www.instagram") == true){
-            eturl?.setText(url)
-            hidekeyboard()
-            progress?.visibility = View.VISIBLE
-            eturl?.error = null
-            getDownloadableUrl(eturl?.text.toString())
-        }
-        else{
-            progress?.visibility = View.GONE
-//            if (eturl?.text?.isEmpty() == true)
-//                Toast.makeText(activity, "Invalid Link", Toast.LENGTH_LONG).show()
-        }
+//        clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+//        url = clipboard?.text as String
+//        if (url?.contains("www.instagram") == true){
+//            eturl?.setText(url)
+//            hidekeyboard()
+//            progress?.visibility = View.VISIBLE
+//            eturl?.error = null
+//            getDownloadableUrl(eturl?.text.toString())
+//        }
+//        else{
+//            progress?.visibility = View.GONE
+////            if (eturl?.text?.isEmpty() == true)
+////                Toast.makeText(activity, "Invalid Link", Toast.LENGTH_LONG).show()
+//        }
 
 
 
         try {
-            val extras = activity?.intent?.extras
-            val value1 = extras!!.getString(Intent.EXTRA_TEXT)
-            if (value1 != null)
-            {
-                eturl?.setText(value1)
-                hidekeyboard()
-                checkpermission()
-                if(eturl?.text.toString().isNotEmpty()){
-                    progress?.visibility = View.VISIBLE
-                    eturl?.error = null
-                    getDownloadableUrl(eturl?.text.toString())
-                } else
-                    Toast.makeText(activity, "Enter Link Then Click Generate", Toast.LENGTH_LONG).show()
-            }
 
+            if (activity?.intent?.extras != null)
+            {   val extras = activity?.intent?.extras
+                val value1 = extras!!.getString(Intent.EXTRA_TEXT)
+                if (value1 != null)
+                {
+                    eturl?.setText(value1)
+                    hidekeyboard()
+                    checkpermission()
+                    if(eturl?.text.toString().isNotEmpty()){
+                        progress?.visibility = View.VISIBLE
+                        eturl?.error = null
+                        getDownloadableUrl(eturl?.text.toString())
+                    } else
+                        Toast.makeText(activity, "Enter Link Then Click Generate", Toast.LENGTH_LONG).show()
+                }
+            }
         }catch (E:Exception)
         {
             E.printStackTrace()
@@ -129,20 +131,40 @@ class DownloadFragment : Fragment(){
 
         download?.setOnClickListener {
             //videoView.start()
-            progress?.visibility = View.VISIBLE
-            activity?.applicationContext?.let { downloadFile(it,downloadableurl) }
+            try {
+                if(eturl?.text.toString().isNotEmpty()){
+                    progress?.visibility = View.VISIBLE
+                    activity?.applicationContext?.let { downloadFile(it,downloadableurl) }
+                } else
+                {
+                    Toast.makeText(activity, "Enter Link Again For Download", Toast.LENGTH_LONG).show()
+                }
+
+            }catch (e:Exception)
+            {
+                e.printStackTrace()
+            }
+            
         }
         fromclip?.setOnClickListener {
-            val clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            var str = clipboard.text as String?
-            if (str?.contains("www.instagram") == true){
-                eturl?.setText(str)
-                progress?.visibility = View.VISIBLE
-                getDownloadableUrl(str)
+            try {
+                val clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                   val str = clipboard.text as String?
+                   if (str != null)
+                   {
+                       if (str.contains("www.instagram")){
+                           eturl?.setText(str)
+                           progress?.visibility = View.VISIBLE
+                           getDownloadableUrl(str)
+                       }
+                   }else
+                   {
+                       Toast.makeText(activity, "Copy The link First then click paste link", Toast.LENGTH_LONG).show()
+                   }
+            }catch (e:Exception)
+            {
+                e.printStackTrace()
             }
-
-
-
         }
 
 
@@ -182,30 +204,30 @@ class DownloadFragment : Fragment(){
 
     override fun onResume() {
         super.onResume()
-        clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        url = clipboard?.text as String
-        if (url?.contains("www.instagram") == true){
-            eturl?.setText(url)
-            hidekeyboard()
-            progress?.visibility = View.VISIBLE
-            eturl?.error = null
-            getDownloadableUrl(eturl?.text.toString())
-        }
-        else{
-            progress?.visibility = View.GONE
-        }
+//        clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+//        url = clipboard?.text as String
+//        if (url?.contains("www.instagram") == true){
+//            eturl?.setText(url)
+//            hidekeyboard()
+//            progress?.visibility = View.VISIBLE
+//            eturl?.error = null
+//            getDownloadableUrl(eturl?.text.toString())
+//        }
+//        else{
+//            progress?.visibility = View.GONE
+//        }
     }
 
     override fun onPause() {
         super.onPause()
-        val clipData = ClipData.newPlainText("", "")
-        clipboard?.setPrimaryClip(clipData)
+//        val clipData = ClipData.newPlainText("", "")
+//        clipboard?.setPrimaryClip(clipData)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        val clipData = ClipData.newPlainText("", "")
-        clipboard?.setPrimaryClip(clipData)
+//        val clipData = ClipData.newPlainText("", "")
+//        clipboard?.setPrimaryClip(clipData)
     }
 
 
@@ -264,7 +286,7 @@ class DownloadFragment : Fragment(){
                     override fun getHeaders(): Map<String, String> {
                         val headers = HashMap<String, String>()
 //                headers["Content-Type"] = "application/json"
-                        headers["User-Agent"] = "Chrome/91.0.4472.77 Mobile"
+                        headers["User-Agent"] = "Chrome/91.0.4472.120 Mobile"
                         return headers
                     }
                 }
